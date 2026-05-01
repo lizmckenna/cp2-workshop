@@ -20,13 +20,12 @@
     --emerald-deep:#073226;
     --sapphire:#1c3478;
     --sapphire-deep:#13245a;
-    --ruby:#8a1c2d;
-    --ruby-deep:#5e131f;
     --amethyst:#5d2a78;
     --amethyst-deep:#3d1a52;
+    --citrine:#d2a02a;
+    --citrine-deep:#a07614;
+    --citrine-light:#e3bb52;
     --topaz:#b8893d;
-    --gold:#c9982f;
-    --gold-light:#dcb45c;
 
     --display:"Space Grotesk", system-ui, sans-serif;
     --sans:"Inter", system-ui, sans-serif;
@@ -39,53 +38,48 @@
   .mono{font-family:var(--mono);font-size:.78em;letter-spacing:.06em;text-transform:uppercase}
   .muted{color:var(--ink-mute)}
 
-  /* Bulcão tile row at top */
+  /* Bulcão tile row at top — small, tasteful */
   .tile-row{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    height:96px;
-    border-bottom:1.5px solid var(--ink);
+    grid-template-columns:repeat(8, 1fr);
+    height:46px;
+    border-bottom:1px solid var(--rule);
   }
-  .tile{position:relative;background:var(--paper);overflow:hidden}
-  .tile + .tile{border-left:1px solid var(--ink)}
+  .tile{position:relative;overflow:hidden}
+  .tile + .tile{border-left:1px solid rgba(133,122,99,.18)}
+  .tile > i{display:block;position:absolute}
 
-  /* Tile 1: solid square */
-  .tile.t-square{background:var(--emerald)}
-
-  /* Tile 2: triangle pointing up */
-  .tile.t-triangle::after{
-    content:"";position:absolute;
-    left:50%;top:50%;
+  .tile.t-square > i{
+    left:34%;top:28%;width:32%;height:44%;
+  }
+  .tile.t-triangle > i{
+    left:50%;top:54%;
     transform:translate(-50%,-50%);
-    width:62%;height:74%;
-    background:var(--sapphire);
+    width:30%;height:44%;
     clip-path:polygon(50% 0, 100% 100%, 0 100%);
   }
-
-  /* Tile 3: top semicircle (dome) */
-  .tile.t-semi::after{
-    content:"";position:absolute;
-    left:18%;right:18%;
-    top:28%;bottom:8%;
-    background:var(--ruby);
+  .tile.t-semi > i{
+    left:34%;right:34%;
+    top:36%;bottom:22%;
     border-radius:50% 50% 0 0 / 100% 100% 0 0;
   }
-
-  /* Tile 4: quarter circle (bottom-right) */
-  .tile.t-quarter::after{
-    content:"";position:absolute;
-    bottom:0;right:0;
-    width:74%;height:90%;
-    background:var(--amethyst);
+  .tile.t-quarter > i{
+    bottom:22%;right:34%;
+    width:32%;height:48%;
     border-top-left-radius:100% 100%;
   }
+
+  .tile > i.c-em{background:var(--emerald)}
+  .tile > i.c-sa{background:var(--sapphire)}
+  .tile > i.c-am{background:var(--amethyst)}
+  .tile > i.c-ci{background:var(--citrine)}
 
   /* gate */
   #gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:50}
   #gate .card{background:var(--bone);border:2px solid var(--ink);padding:40px 44px;max-width:440px;width:90%;position:relative}
   #gate .card::before{content:"";position:absolute;top:-2px;left:-2px;width:24px;height:24px;background:var(--emerald)}
-  #gate .card::after{content:"";position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--ruby)}
-  #gate .pre{font-family:var(--mono);font-size:11px;color:var(--ruby);margin-bottom:6px}
+  #gate .card::after{content:"";position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--citrine)}
+  #gate .pre{font-family:var(--mono);font-size:11px;color:var(--amethyst);margin-bottom:6px}
   #gate h1{font-family:var(--display);font-size:38px;line-height:1.05;margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
   #gate h1 .acc{color:var(--emerald)}
   #gate .small{font-size:13px;color:var(--ink-mute);margin-bottom:24px}
@@ -93,22 +87,22 @@
   #gate input:focus{outline:none;border-color:var(--emerald)}
   #gate button{margin-top:12px;width:100%;padding:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
   #gate button:hover{background:var(--emerald);border-color:var(--emerald)}
-  #gate .err{color:var(--ruby);font-size:12px;margin-top:10px;min-height:16px}
+  #gate .err{color:var(--amethyst);font-size:12px;margin-top:10px;min-height:16px}
 
   main{max-width:980px;margin:0 auto;padding:0 24px 96px}
 
   header.hero{padding:36px 0 0}
   .kicker{display:flex;align-items:center;gap:12px;color:var(--ink-mute)}
-  .kicker .sq{width:8px;height:8px;background:var(--ruby)}
+  .kicker .sq{width:8px;height:8px;background:var(--amethyst)}
   h1.title{font-family:var(--display);font-size:64px;line-height:.98;margin:18px 0 0;font-weight:700;letter-spacing:-.025em}
   h1.title .em{color:var(--emerald)}
-  h1.title .ru{color:var(--ruby)}
-  .lede{font-family:var(--sans);font-size:20px;line-height:1.45;color:var(--ink-soft);margin:22px 0 32px;max-width:720px;font-weight:400}
+  h1.title .ci{color:var(--citrine-deep)}
+  .lede{font-family:var(--sans);font-size:20px;line-height:1.5;color:var(--ink-soft);margin:22px 0 32px;max-width:720px;font-weight:400}
   .lede strong{color:var(--ink);font-weight:600}
 
   section{margin-top:64px}
   h2{font-family:var(--display);font-size:36px;font-weight:700;margin:0 0 14px;letter-spacing:-.015em;line-height:1.1}
-  h2 .num{font-family:var(--mono);font-size:11px;color:var(--ruby);display:block;margin-bottom:8px;letter-spacing:.14em}
+  h2 .num{font-family:var(--mono);font-size:11px;color:var(--amethyst);display:block;margin-bottom:8px;letter-spacing:.14em}
   .section-lede{font-family:var(--sans);font-size:16px;color:var(--ink-soft);max-width:720px;margin-bottom:30px}
 
   /* frame block */
@@ -123,18 +117,21 @@
   .method{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:24px;border:2px solid var(--ink)}
   .method .item{background:var(--bone);padding:22px 24px;border-right:1px solid var(--ink)}
   .method .item:last-child{border-right:0}
-  .method .item .mono{color:var(--ruby);margin-bottom:10px;display:block}
+  .method .item .mono{margin-bottom:10px;display:block}
+  .method .item:nth-child(1) .mono{color:var(--amethyst)}
+  .method .item:nth-child(2) .mono{color:var(--sapphire)}
+  .method .item:nth-child(3) .mono{color:var(--citrine-deep)}
   .method .item .h{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ink)}
   .method .item p{margin:0;font-size:14px;color:var(--ink-soft)}
   @media (max-width:760px){.method{grid-template-columns:1fr}.method .item{border-right:0;border-bottom:1px solid var(--ink)}.method .item:last-child{border-bottom:0}}
 
-  /* mechanisms */
+  /* mechanisms — five tones, no ruby */
   .mechs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:18px;border:2px solid var(--ink)}
   .mech{background:var(--bone);padding:18px 16px;border-right:1px solid var(--ink);position:relative}
   .mech:last-child{border-right:0}
   .mech::before{content:"";position:absolute;top:0;left:0;width:24px;height:6px;background:var(--emerald)}
   .mech:nth-child(2)::before{background:var(--sapphire)}
-  .mech:nth-child(3)::before{background:var(--ruby)}
+  .mech:nth-child(3)::before{background:var(--citrine)}
   .mech:nth-child(4)::before{background:var(--amethyst)}
   .mech:nth-child(5)::before{background:var(--topaz)}
   .mech .n{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin:8px 0 6px}
@@ -142,21 +139,20 @@
   .mech p{margin:0;color:var(--ink-soft);font-size:12.5px;line-height:1.45}
   @media (max-width:760px){.mechs{grid-template-columns:1fr 1fr}.mech{border-right:0;border-bottom:1px solid var(--ink)}}
 
-  /* RQ cards */
+  /* RQ cards — five-tone cycle, no ruby */
   .rq{background:var(--bone);border:2px solid var(--ink);margin:0 0 18px;padding:0;position:relative;overflow:hidden}
   .rq::before{content:"";position:absolute;top:0;left:0;width:8px;height:100%;background:var(--emerald)}
-  .rq:nth-child(2n)::before{background:var(--ruby)}
-  .rq:nth-child(3n)::before{background:var(--gold)}
-  .rq:nth-child(4n)::before{background:var(--sapphire)}
-  .rq:nth-child(5n)::before{background:var(--amethyst)}
-  .rq:nth-child(7n)::before{background:var(--topaz)}
+  .rq:nth-child(5n+2)::before{background:var(--sapphire)}
+  .rq:nth-child(5n+3)::before{background:var(--citrine)}
+  .rq:nth-child(5n+4)::before{background:var(--amethyst)}
+  .rq:nth-child(5n+5)::before{background:var(--topaz)}
   .rq .inner{padding:26px 30px 26px 38px}
   .rq .num{position:absolute;top:18px;right:24px;font-family:var(--mono);font-size:11px;color:var(--ink-mute);letter-spacing:.1em}
   .rq .q{font-family:var(--display);font-size:23px;line-height:1.25;font-weight:600;margin:0 80px 0 0;letter-spacing:-.005em}
-  .rq .q em{color:var(--emerald);font-style:normal;background:linear-gradient(to bottom, transparent 60%, rgba(14,89,68,.18) 60%);padding:0 2px}
-  .rq .htw-toggle{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--ruby);background:none;border:0;padding:0;cursor:pointer;letter-spacing:.08em;font-weight:500}
+  .rq .q em{color:var(--amethyst);font-style:normal;background:linear-gradient(to bottom, transparent 60%, rgba(93,42,120,.16) 60%);padding:0 2px}
+  .rq .htw-toggle{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--citrine-deep);background:none;border:0;padding:0;cursor:pointer;letter-spacing:.08em;font-weight:500}
   .rq .htw-toggle:hover{color:var(--emerald)}
-  .rq .htw{display:none;margin-top:12px;padding:14px 18px;background:var(--paper);border-left:4px solid var(--ruby);font-size:14px;color:var(--ink-soft)}
+  .rq .htw{display:none;margin-top:12px;padding:14px 18px;background:var(--paper);border-left:4px solid var(--citrine);font-size:14px;color:var(--ink-soft)}
   .rq.open .htw{display:block}
 
   .rq .scoring{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;padding-top:20px;border-top:1px dashed var(--rule)}
@@ -188,42 +184,42 @@
   .rq .post button{padding:8px 16px;border:1.5px solid var(--ink);background:transparent;font-size:12px;cursor:pointer;font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   .rq .post button:hover{background:var(--ink);color:var(--bone)}
 
-  /* prompt — DEEP AMETHYST + GOLD palette */
+  /* prompt box — deep amethyst with citrine accents */
   .prompt-box{background:var(--amethyst-deep);color:var(--bone);padding:0;margin-top:20px;position:relative;border:2px solid var(--ink)}
-  .prompt-box::after{content:"";position:absolute;bottom:0;right:0;width:64px;height:64px;background:var(--gold)}
+  .prompt-box::after{content:"";position:absolute;bottom:0;right:0;width:64px;height:64px;background:var(--citrine)}
   .prompt-box::before{content:"";position:absolute;top:0;left:0;width:96px;height:8px;background:var(--emerald)}
   .prompt-box .inner{padding:48px 44px 42px;position:relative;z-index:1}
-  .prompt-box .mono{color:var(--gold-light);letter-spacing:.1em}
+  .prompt-box .mono{color:var(--citrine-light);letter-spacing:.1em}
   .prompt-box .q{font-family:var(--display);font-size:32px;line-height:1.2;margin:14px 0 8px;font-weight:700;letter-spacing:-.015em;color:#f6e9c8}
-  .prompt-box .q em{font-style:normal;background:linear-gradient(to bottom, transparent 65%, var(--gold) 65%, var(--gold) 92%, transparent 92%);padding:0 4px;color:#fff}
+  .prompt-box .q em{font-style:normal;background:linear-gradient(to bottom, transparent 65%, var(--citrine) 65%, var(--citrine) 92%, transparent 92%);padding:0 4px;color:#fff}
   .prompt-box .sub{font-size:14px;color:#d6c89c;max-width:620px;margin-bottom:24px}
-  .prompt-box textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(220,180,92,.45);color:var(--bone);padding:14px 16px;font-family:var(--sans);font-size:16px;line-height:1.5;resize:vertical;min-height:120px}
+  .prompt-box textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(227,187,82,.45);color:var(--bone);padding:14px 16px;font-family:var(--sans);font-size:16px;line-height:1.5;resize:vertical;min-height:120px}
   .prompt-box textarea::placeholder{color:rgba(255,243,210,.45)}
-  .prompt-box textarea:focus{outline:none;border-color:var(--gold-light)}
+  .prompt-box textarea:focus{outline:none;border-color:var(--citrine-light)}
   .prompt-box .post{display:flex;gap:10px;margin-top:12px;align-items:center}
-  .prompt-box .post input{background:rgba(255,255,255,.05);border:1.5px solid rgba(220,180,92,.45);color:var(--bone);padding:10px 12px;font-family:var(--sans);font-size:13px;flex:0 0 220px}
+  .prompt-box .post input{background:rgba(255,255,255,.05);border:1.5px solid rgba(227,187,82,.45);color:var(--bone);padding:10px 12px;font-family:var(--sans);font-size:13px;flex:0 0 220px}
   .prompt-box .post input::placeholder{color:rgba(255,243,210,.45)}
-  .prompt-box .post button{padding:10px 22px;border:1.5px solid var(--gold);background:var(--gold);color:var(--amethyst-deep);font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  .prompt-box .post button:hover{background:var(--gold-light);border-color:var(--gold-light)}
-  .prompt-box .responses{margin-top:26px;border-top:1px solid rgba(220,180,92,.3);padding-top:18px}
-  .prompt-box .responses .h{font-family:var(--mono);font-size:10px;color:var(--gold-light);letter-spacing:.1em;margin-bottom:14px}
-  .prompt-box .response{padding:14px 0;border-bottom:1px solid rgba(220,180,92,.15);font-size:14.5px;color:#d6c89c}
+  .prompt-box .post button{padding:10px 22px;border:1.5px solid var(--citrine);background:var(--citrine);color:var(--amethyst-deep);font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+  .prompt-box .post button:hover{background:var(--citrine-light);border-color:var(--citrine-light)}
+  .prompt-box .responses{margin-top:26px;border-top:1px solid rgba(227,187,82,.3);padding-top:18px}
+  .prompt-box .responses .h{font-family:var(--mono);font-size:10px;color:var(--citrine-light);letter-spacing:.1em;margin-bottom:14px}
+  .prompt-box .response{padding:14px 0;border-bottom:1px solid rgba(227,187,82,.15);font-size:14.5px;color:#d6c89c}
   .prompt-box .response:last-child{border-bottom:0}
   .prompt-box .response .meta{font-family:var(--mono);font-size:10px;color:rgba(255,243,210,.5);margin-bottom:4px}
 
-  /* freeform RQ */
+  /* freeform RQ — sapphire accent */
   .submit-rq{background:var(--bone);border:2px solid var(--ink);padding:0;margin-top:28px;position:relative}
-  .submit-rq::before{content:"";position:absolute;top:0;left:0;width:100%;height:8px;background:var(--ruby)}
+  .submit-rq::before{content:"";position:absolute;top:0;left:0;width:100%;height:8px;background:var(--sapphire)}
   .submit-rq .inner{padding:30px 36px}
-  .submit-rq .mono{color:var(--ruby)}
+  .submit-rq .mono{color:var(--sapphire)}
   .submit-rq h3{font-family:var(--display);font-size:26px;font-weight:700;margin:8px 0 6px;letter-spacing:-.015em}
   .submit-rq p{margin:0 0 16px;color:var(--ink-soft);font-size:14px;max-width:620px}
   .submit-rq textarea{width:100%;border:1.5px solid var(--rule);background:#fff;padding:12px 14px;font-family:var(--sans);font-size:16px;resize:vertical;min-height:100px}
-  .submit-rq textarea:focus{outline:none;border-color:var(--ruby)}
+  .submit-rq textarea:focus{outline:none;border-color:var(--sapphire)}
   .submit-rq .post{display:flex;gap:8px;margin-top:10px;align-items:center}
   .submit-rq .post input{flex:0 0 200px;border:1.5px solid var(--rule);background:#fff;padding:9px 12px;font-family:var(--sans);font-size:12px}
-  .submit-rq .post button{padding:10px 20px;border:1.5px solid var(--ruby);background:var(--ruby);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  .submit-rq .post button:hover{background:var(--ruby-deep)}
+  .submit-rq .post button{padding:10px 20px;border:1.5px solid var(--sapphire);background:var(--sapphire);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+  .submit-rq .post button:hover{background:var(--sapphire-deep)}
   .submit-rq .submitted{margin-top:22px}
   .submit-rq .submitted .h{font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:10px}
   .submit-rq .sub-item{padding:12px 0;border-top:1px dashed var(--rule);font-size:14px}
@@ -231,7 +227,7 @@
   .submit-rq .sub-item .body{font-family:var(--sans);font-size:15.5px;color:var(--ink)}
 
   footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-mute)}
-  footer .mono{display:block;margin-bottom:6px;color:var(--ruby)}
+  footer .mono{display:block;margin-bottom:6px;color:var(--amethyst)}
 </style>
 </head>
 <body>
@@ -250,16 +246,20 @@
 <main id="content" style="display:none">
 
 <div class="tile-row">
-  <div class="tile t-square"></div>
-  <div class="tile t-triangle"></div>
-  <div class="tile t-semi"></div>
-  <div class="tile t-quarter"></div>
+  <div class="tile t-square"><i class="c-em"></i></div>
+  <div class="tile t-triangle"><i class="c-sa"></i></div>
+  <div class="tile t-semi"><i class="c-am"></i></div>
+  <div class="tile t-quarter"><i class="c-ci"></i></div>
+  <div class="tile t-square"><i class="c-ci"></i></div>
+  <div class="tile t-triangle"><i class="c-am"></i></div>
+  <div class="tile t-semi"><i class="c-sa"></i></div>
+  <div class="tile t-quarter"><i class="c-em"></i></div>
 </div>
 
 <header class="hero">
   <div class="kicker"><span class="sq"></span><span class="mono">Civic Power Report 2 · in workshop · draft</span></div>
-  <h1 class="title display">Democracy<br/>needs an<br/><span class="em">R&amp;D</span> <span class="ru">function</span>.</h1>
-  <p class="lede">Pharma has it. Defense has it. Agriculture has it. Democracy doesn't. The result is a field that runs on hunch, vendor pitch, and the heroics of a handful of operators who figured it out alone. We're part of building what's missing. <strong>CP Report 2 is the next artifact. We need help shaping what it asks.</strong></p>
+  <h1 class="title display">Democracy<br/>needs an<br/><span class="em">R&amp;D</span> <span class="ci">function</span>.</h1>
+  <p class="lede">Democracy doesn't have an R&amp;D function. The work runs on hunch and vendor pitch and the operators who figured it out alone. We want CP2 to ask better questions than that. <strong>This room is where we figure out which ones.</strong></p>
 </header>
 
 <section>
@@ -297,8 +297,8 @@
     </div>
   </div>
 
-  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">What we're trying to explain: leadership.</h3>
-  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:720px">Not as a wild card sitting next to the mechanisms. As <em>the dependent variable</em>. The production of purple line leaders (people with followings, embedded in relational fabric, who develop others) is what we are trying to explain. The mechanisms below are candidate explanations.</p>
+  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">What we're trying to deeply understand and explain: leadership.</h3>
+  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:720px">Not as a wild card sitting next to the mechanisms. As <em>the dependent variable</em>. The production of purple line leaders (people with followings, embedded in relational fabric, who develop others) is what we are trying to deeply understand and explain. The mechanisms below are candidate explanations.</p>
 
   <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">Five candidate mechanisms</h3>
   <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 4px;max-width:720px">Properties that (we think) produce leaders and convert participation into durable power. None can be hit by running more events. Each requires actual organizational depth. Harder to fake. Harder to capture.</p>
@@ -332,8 +332,8 @@
 </section>
 
 <section>
-  <h2><span class="num">§ 3 · the questions</span>Nine candidate research questions. Score them. React to them. Workshop them.</h2>
-  <p class="section-lede">Three criteria. <em>Field learning</em>: how much does answering this teach the field? <em>Practice</em>: how much does it inform what organizers actually do? <em>Paradigm shift</em>: how much does it move elite, funder, and academic understanding? Some questions are about organizational properties. Some are about leadership and the work organizers do on themselves. Some are about conditions. We are not asking them all in one report. We are trying to figure out which ones to ask.</p>
+  <h2><span class="num">§ 3 · the questions</span>Nine questions, in working draft.</h2>
+  <p class="section-lede">Three criteria for scoring. <em>Field learning</em>: how much does answering this teach the field? <em>Practice</em>: how much does it inform what organizers actually do? <em>Paradigm shift</em>: how much does it move elite, funder, and academic understanding? We won't run all nine in one report. The point of this room is to figure out which to keep.</p>
 
   <div id="rqs"></div>
 </section>
@@ -387,7 +387,7 @@
 
 <script>
 const SHARED_PASSWORD = "civicpower";
-const STORAGE_KEY = "cp2-state-v2";
+const STORAGE_KEY = "cp2-state-v3";
 
 const RQS = [
   {

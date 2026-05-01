@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Civic Power II · research questions in workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f1ead6;
+    --bone:#fbf6e8;
+    --ink:#161514;
+    --ink-soft:#3a352d;
+    --ink-mute:#7a7263;
+    --rule:#cdc3a8;
+
+    --emerald:#0e5944;
+    --emerald-deep:#073226;
+    --sapphire:#1c3478;
+    --sapphire-deep:#13245a;
+    --ruby:#8a1c2d;
+    --ruby-deep:#5e131f;
+    --amethyst:#5d2a78;
+    --amethyst-deep:#3d1a52;
+    --topaz:#b8893d;
+    --gold:#c9982f;
+    --gold-light:#dcb45c;
+
+    --display:"Space Grotesk", system-ui, sans-serif;
+    --sans:"Inter", system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--emerald)}
+  .display{font-family:var(--display);letter-spacing:-.01em}
+  .mono{font-family:var(--mono);font-size:.78em;letter-spacing:.06em;text-transform:uppercase}
+  .muted{color:var(--ink-mute)}
+
+  /* Bulcão tile row at top */
+  .tile-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    height:96px;
+    border-bottom:1.5px solid var(--ink);
+  }
+  .tile{position:relative;background:var(--paper);overflow:hidden}
+  .tile + .tile{border-left:1px solid var(--ink)}
+
+  /* Tile 1: solid square */
+  .tile.t-square{background:var(--emerald)}
+
+  /* Tile 2: triangle pointing up */
+  .tile.t-triangle::after{
+    content:"";position:absolute;
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    width:62%;height:74%;
+    background:var(--sapphire);
+    clip-path:polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  /* Tile 3: top semicircle (dome) */
+  .tile.t-semi::after{
+    content:"";position:absolute;
+    left:18%;right:18%;
+    top:28%;bottom:8%;
+    background:var(--ruby);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  }
+
+  /* Tile 4: quarter circle (bottom-right) */
+  .tile.t-quarter::after{
+    content:"";position:absolute;
+    bottom:0;right:0;
+    width:74%;height:90%;
+    background:var(--amethyst);
+    border-top-left-radius:100% 100%;
+  }
+
+  /* gate */
+  #gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:50}
+  #gate .card{background:var(--bone);border:2px solid var(--ink);padding:40px 44px;max-width:440px;width:90%;position:relative}
+  #gate .card::before{content:"";position:absolute;top:-2px;left:-2px;width:24px;height:24px;background:var(--emerald)}
+  #gate .card::after{content:"";position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--ruby)}
+  #gate .pre{font-family:var(--mono);font-size:11px;color:var(--ruby);margin-bottom:6px}
+  #gate h1{font-family:var(--display);font-size:38px;line-height:1.05;margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
+  #gate h1 .acc{color:var(--emerald)}
+  #gate .small{font-size:13px;color:var(--ink-mute);margin-bottom:24px}
+  #gate input{width:100%;padding:11px 14px;border:1.5px solid var(--ink);background:#fff;font-family:var(--mono);font-size:13px;letter-spacing:.05em}
+  #gate input:focus{outline:none;border-color:var(--emerald)}
+  #gate button{margin-top:12px;width:100%;padding:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+  #gate button:hover{background:var(--emerald);border-color:var(--emerald)}
+  #gate .err{color:var(--ruby);font-size:12px;margin-top:10px;min-height:16px}
+
+  main{max-width:980px;margin:0 auto;padding:0 24px 96px}
+
+  header.hero{padding:36px 0 0}
+  .kicker{display:flex;align-items:center;gap:12px;color:var(--ink-mute)}
+  .kicker .sq{width:8px;height:8px;background:var(--ruby)}
+  h1.title{font-family:var(--display);font-size:64px;line-height:.98;margin:18px 0 0;font-weight:700;letter-spacing:-.025em}
+  h1.title .em{color:var(--emerald)}
+  h1.title .ru{color:var(--ruby)}
+  .lede{font-family:var(--sans);font-size:20px;line-height:1.45;color:var(--ink-soft);margin:22px 0 32px;max-width:720px;font-weight:400}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  section{margin-top:64px}
+  h2{font-family:var(--display);font-size:36px;font-weight:700;margin:0 0 14px;letter-spacing:-.015em;line-height:1.1}
+  h2 .num{font-family:var(--mono);font-size:11px;color:var(--ruby);display:block;margin-bottom:8px;letter-spacing:.14em}
+  .section-lede{font-family:var(--sans);font-size:16px;color:var(--ink-soft);max-width:720px;margin-bottom:30px}
+
+  /* frame block */
+  .frame{background:var(--bone);border:2px solid var(--ink);padding:0;margin:0 0 24px;position:relative}
+  .frame::before{content:"";position:absolute;top:-2px;left:-2px;width:32px;height:32px;background:var(--emerald)}
+  .frame .inner{padding:32px 36px}
+  .frame p{margin:0 0 14px;font-size:16px}
+  .frame p:last-child{margin-bottom:0}
+  .frame strong{font-family:var(--display);font-weight:700;color:var(--emerald-deep);font-size:17px}
+
+  /* method strip */
+  .method{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:24px;border:2px solid var(--ink)}
+  .method .item{background:var(--bone);padding:22px 24px;border-right:1px solid var(--ink)}
+  .method .item:last-child{border-right:0}
+  .method .item .mono{color:var(--ruby);margin-bottom:10px;display:block}
+  .method .item .h{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+  .method .item p{margin:0;font-size:14px;color:var(--ink-soft)}
+  @media (max-width:760px){.method{grid-template-columns:1fr}.method .item{border-right:0;border-bottom:1px solid var(--ink)}.method .item:last-child{border-bottom:0}}
+
+  /* mechanisms */
+  .mechs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:18px;border:2px solid var(--ink)}
+  .mech{background:var(--bone);padding:18px 16px;border-right:1px solid var(--ink);position:relative}
+  .mech:last-child{border-right:0}
+  .mech::before{content:"";position:absolute;top:0;left:0;width:24px;height:6px;background:var(--emerald)}
+  .mech:nth-child(2)::before{background:var(--sapphire)}
+  .mech:nth-child(3)::before{background:var(--ruby)}
+  .mech:nth-child(4)::before{background:var(--amethyst)}
+  .mech:nth-child(5)::before{background:var(--topaz)}
+  .mech .n{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin:8px 0 6px}
+  .mech .h{font-family:var(--display);font-weight:700;font-size:17px;margin-bottom:6px;line-height:1.15}
+  .mech p{margin:0;color:var(--ink-soft);font-size:12.5px;line-height:1.45}
+  @media (max-width:760px){.mechs{grid-template-columns:1fr 1fr}.mech{border-right:0;border-bottom:1px solid var(--ink)}}
+
+  /* RQ cards */
+  .rq{background:var(--bone);border:2px solid var(--ink);margin:0 0 18px;padding:0;position:relative;overflow:hidden}
+  .rq::before{content:"";position:absolute;top:0;left:0;width:8px;height:100%;background:var(--emerald)}
+  .rq:nth-child(2n)::before{background:var(--ruby)}
+  .rq:nth-child(3n)::before{background:var(--gold)}
+  .rq:nth-child(4n)::before{background:var(--sapphire)}
+  .rq:nth-child(5n)::before{background:var(--amethyst)}
+  .rq:nth-child(7n)::before{background:var(--topaz)}
+  .rq .inner{padding:26px 30px 26px 38px}
+  .rq .num{position:absolute;top:18px;right:24px;font-family:var(--mono);font-size:11px;color:var(--ink-mute);letter-spacing:.1em}
+  .rq .q{font-family:var(--display);font-size:23px;line-height:1.25;font-weight:600;margin:0 80px 0 0;letter-spacing:-.005em}
+  .rq .q em{color:var(--emerald);font-style:normal;background:linear-gradient(to bottom, transparent 60%, rgba(14,89,68,.18) 60%);padding:0 2px}
+  .rq .htw-toggle{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--ruby);background:none;border:0;padding:0;cursor:pointer;letter-spacing:.08em;font-weight:500}
+  .rq .htw-toggle:hover{color:var(--emerald)}
+  .rq .htw{display:none;margin-top:12px;padding:14px 18px;background:var(--paper);border-left:4px solid var(--ruby);font-size:14px;color:var(--ink-soft)}
+  .rq.open .htw{display:block}
+
+  .rq .scoring{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;padding-top:20px;border-top:1px dashed var(--rule)}
+  .rq .scoring .axis{font-size:12px}
+  .rq .scoring .axis .label{display:flex;justify-content:space-between;margin-bottom:6px;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.06em}
+  .rq .scoring .axis .label .v{color:var(--emerald);font-weight:700}
+  .rq .scoring input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--rule);outline:none;border-radius:0}
+  .rq .scoring input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--emerald);cursor:pointer;border:2px solid var(--bone);border-radius:0}
+  .rq .scoring input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--emerald);cursor:pointer;border:2px solid var(--bone);border-radius:0}
+  .rq .scoring .avg{font-family:var(--mono);font-size:9px;color:var(--ink-mute);margin-top:4px;letter-spacing:.06em}
+
+  .rq .reacts{display:flex;gap:0;margin-top:20px;flex-wrap:wrap;border:1.5px solid var(--ink)}
+  .rq .reacts button{font-family:var(--sans);font-size:12px;padding:8px 14px;border:0;border-right:1px solid var(--ink);background:var(--bone);cursor:pointer;color:var(--ink-soft);font-weight:500;flex:1}
+  .rq .reacts button:last-child{border-right:0}
+  .rq .reacts button:hover{background:var(--paper)}
+  .rq .reacts button.active{background:var(--emerald);color:var(--bone)}
+  .rq .reacts button .ct{font-family:var(--mono);font-size:10px;margin-left:6px;opacity:.75}
+
+  .rq .threads{margin-top:18px;padding-top:18px;border-top:1px dashed var(--rule)}
+  .rq .threads .header{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:10px}
+  .rq .comment{padding:10px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+  .rq .comment:last-child{border-bottom:0}
+  .rq .comment .meta{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin-bottom:4px;letter-spacing:.04em}
+  .rq .comment .body{color:var(--ink-soft)}
+  .rq textarea{width:100%;border:1.5px solid var(--rule);background:#fff;padding:10px 12px;font-family:var(--sans);font-size:13.5px;resize:vertical;min-height:60px;margin-top:10px}
+  .rq textarea:focus{outline:none;border-color:var(--emerald)}
+  .rq .post{display:flex;gap:8px;margin-top:8px;align-items:center}
+  .rq .post input{flex:0 0 180px;border:1.5px solid var(--rule);background:#fff;padding:8px 10px;font-family:var(--sans);font-size:12px}
+  .rq .post button{padding:8px 16px;border:1.5px solid var(--ink);background:transparent;font-size:12px;cursor:pointer;font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .rq .post button:hover{background:var(--ink);color:var(--bone)}
+
+  /* prompt — DEEP AMETHYST + GOLD palette */
+  .prompt-box{background:var(--amethyst-deep);color:var(--bone);padding:0;margin-top:20px;position:relative;border:2px solid var(--ink)}
+  .prompt-box::after{content:"";position:absolute;bottom:0;right:0;width:64px;height:64px;background:var(--gold)}
+  .prompt-box::before{content:"";position:absolute;top:0;left:0;width:96px;height:8px;background:var(--emerald)}
+  .prompt-box .inner{padding:48px 44px 42px;position:relative;z-index:1}
+  .prompt-box .mono{color:var(--gold-light);letter-spacing:.1em}
+  .prompt-box .q{font-family:var(--display);font-size:32px;line-height:1.2;margin:14px 0 8px;font-weight:700;letter-spacing:-.015em;color:#f6e9c8}
+  .prompt-box .q em{font-style:normal;background:linear-gradient(to bottom, transparent 65%, var(--gold) 65%, var(--gold) 92%, transparent 92%);padding:0 4px;color:#fff}
+  .prompt-box .sub{font-size:14px;color:#d6c89c;max-width:620px;margin-bottom:24px}
+  .prompt-box textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(220,180,92,.45);color:var(--bone);padding:14px 16px;font-family:var(--sans);font-size:16px;line-height:1.5;resize:vertical;min-height:120px}
+  .prompt-box textarea::placeholder{color:rgba(255,243,210,.45)}
+  .prompt-box textarea:focus{outline:none;border-color:var(--gold-light)}
+  .prompt-box .post{display:flex;gap:10px;margin-top:12px;align-items:center}
+  .prompt-box .post input{background:rgba(255,255,255,.05);border:1.5px solid rgba(220,180,92,.45);color:var(--bone);padding:10px 12px;font-family:var(--sans);font-size:13px;flex:0 0 220px}
+  .prompt-box .post input::placeholder{color:rgba(255,243,210,.45)}
+  .prompt-box .post button{padding:10px 22px;border:1.5px solid var(--gold);background:var(--gold);color:var(--amethyst-deep);font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+  .prompt-box .post button:hover{background:var(--gold-light);border-color:var(--gold-light)}
+  .prompt-box .responses{margin-top:26px;border-top:1px solid rgba(220,180,92,.3);padding-top:18px}
+  .prompt-box .responses .h{font-family:var(--mono);font-size:10px;color:var(--gold-light);letter-spacing:.1em;margin-bottom:14px}
+  .prompt-box .response{padding:14px 0;border-bottom:1px solid rgba(220,180,92,.15);font-size:14.5px;color:#d6c89c}
+  .prompt-box .response:last-child{border-bottom:0}
+  .prompt-box .response .meta{font-family:var(--mono);font-size:10px;color:rgba(255,243,210,.5);margin-bottom:4px}
+
+  /* freeform RQ */
+  .submit-rq{background:var(--bone);border:2px solid var(--ink);padding:0;margin-top:28px;position:relative}
+  .submit-rq::before{content:"";position:absolute;top:0;left:0;width:100%;height:8px;background:var(--ruby)}
+  .submit-rq .inner{padding:30px 36px}
+  .submit-rq .mono{color:var(--ruby)}
+  .submit-rq h3{font-family:var(--display);font-size:26px;font-weight:700;margin:8px 0 6px;letter-spacing:-.015em}
+  .submit-rq p{margin:0 0 16px;color:var(--ink-soft);font-size:14px;max-width:620px}
+  .submit-rq textarea{width:100%;border:1.5px solid var(--rule);background:#fff;padding:12px 14px;font-family:var(--sans);font-size:16px;resize:vertical;min-height:100px}
+  .submit-rq textarea:focus{outline:none;border-color:var(--ruby)}
+  .submit-rq .post{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .submit-rq .post input{flex:0 0 200px;border:1.5px solid var(--rule);background:#fff;padding:9px 12px;font-family:var(--sans);font-size:12px}
+  .submit-rq .post button{padding:10px 20px;border:1.5px solid var(--ruby);background:var(--ruby);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
+  .submit-rq .post button:hover{background:var(--ruby-deep)}
+  .submit-rq .submitted{margin-top:22px}
+  .submit-rq .submitted .h{font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:10px}
+  .submit-rq .sub-item{padding:12px 0;border-top:1px dashed var(--rule);font-size:14px}
+  .submit-rq .sub-item .meta{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin-bottom:3px}
+  .submit-rq .sub-item .body{font-family:var(--sans);font-size:15.5px;color:var(--ink)}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-mute)}
+  footer .mono{display:block;margin-bottom:6px;color:var(--ruby)}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="card">
+    <div class="pre">Civic Power II · Workshop</div>
+    <h1>Democracy <span class="acc">R&amp;D</span></h1>
+    <div class="small">A working room. Enter the shared password to read the research questions and add your thinking.</div>
+    <input id="gate-input" type="password" placeholder="shared password" autocomplete="off" />
+    <button id="gate-btn">Enter</button>
+    <div class="err" id="gate-err"></div>
+  </div>
+</div>
+
+<main id="content" style="display:none">
+
+<div class="tile-row">
+  <div class="tile t-square"></div>
+  <div class="tile t-triangle"></div>
+  <div class="tile t-semi"></div>
+  <div class="tile t-quarter"></div>
+</div>
+
+<header class="hero">
+  <div class="kicker"><span class="sq"></span><span class="mono">Civic Power Report 2 · in workshop · draft</span></div>
+  <h1 class="title display">Democracy<br/>needs an<br/><span class="em">R&amp;D</span> <span class="ru">function</span>.</h1>
+  <p class="lede">Pharma has it. Defense has it. Agriculture has it. Democracy doesn't. The result is a field that runs on hunch, vendor pitch, and the heroics of a handful of operators who figured it out alone. We're part of building what's missing. <strong>CP Report 2 is the next artifact. We need help shaping what it asks.</strong></p>
+</header>
+
+<section>
+  <h2><span class="num">§ 1 · the frame</span>What CP1 surfaced, and what CP2 has to do differently.</h2>
+  <div class="frame">
+    <div class="inner">
+      <p><strong>Better field is downstream of organizing capacity.</strong> Relational, deeper voter contact is not a tactic a firm can manufacture. It is a lagging indicator of organized base. CP1 gestured at this. CP2 has to land it.</p>
+      <p><strong>Mass participation needs a converter.</strong> Without organized, formation-centered organizations channeling it, participation dissipates. The MN labor-faith-community alignment was exactly that. It turned broad participation into concentrated, directed power capable of moving legislation and governing.</p>
+      <p><strong>Scale and depth are not opposites.</strong> But sequencing matters. You cannot rapid-respond your way to governing power. You can only rapid-respond from organized bases that already exist. CP2 publishes 18 months further into authoritarian consolidation, with more mobilization-without-translation to reckon with.</p>
+      <p><strong>Capture is the live risk.</strong> Clean numbers get stripped from the conditions that produce them. They become memes, then funder targets, then the thing you have to walk back for years. CP2 has to publish in a way that makes capture harder, not easier.</p>
+      <p><strong>Three things are doing the work.</strong> Conditions. Organization. Leadership. The variation we see across orgs (and inside orgs over time) lives in how those three interact.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">§ 2 · the method</span>How the question changes when the unit of analysis changes.</h2>
+  <p class="section-lede">CP2 centers <em>the organization</em> as the unit of analysis. Individual data (attendance, network position, event sequences) becomes evidence about organizational properties. Same data, sharper questions. Each org is a deeply observed case.</p>
+
+  <div class="method">
+    <div class="item">
+      <span class="mono">Meso</span>
+      <div class="h">Mediating institutions</div>
+      <p>Bigger than a single case, smaller than "how does democracy work?" The converters between participation and power.</p>
+    </div>
+    <div class="item">
+      <span class="mono">Probabilistic</span>
+      <div class="h">Not deterministic</div>
+      <p>Mechanisms shift the probability of conversion. They do not determine outcomes. Contingency continues to operate.</p>
+    </div>
+    <div class="item">
+      <span class="mono">Evidence-paired</span>
+      <div class="h">"How would we know?"</div>
+      <p>Every research question paired with the answer to: what evidence would tell us? No question without a data path.</p>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">What we're trying to explain: leadership.</h3>
+  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:720px">Not as a wild card sitting next to the mechanisms. As <em>the dependent variable</em>. The production of purple line leaders (people with followings, embedded in relational fabric, who develop others) is what we are trying to explain. The mechanisms below are candidate explanations.</p>
+
+  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">Five candidate mechanisms</h3>
+  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 4px;max-width:720px">Properties that (we think) produce leaders and convert participation into durable power. None can be hit by running more events. Each requires actual organizational depth. Harder to fake. Harder to capture.</p>
+  <div class="mechs">
+    <div class="mech">
+      <div class="n">M1</div>
+      <div class="h">Culture of agency</div>
+      <p>People as political actors with judgment and initiative. Includes the internal work organizers themselves do: give up control, refuse caretaking, act with their own gumption.</p>
+    </div>
+    <div class="mech">
+      <div class="n">M2</div>
+      <div class="h">Relational bandwidth</div>
+      <p>Density and quality of relationships running through the org. What can flow through it: information, trust, coordination, mutual obligation.</p>
+    </div>
+    <div class="mech">
+      <div class="n">M3</div>
+      <div class="h">Signal credibility</div>
+      <p>When the org speaks or acts, does it carry weight with members, allies, opponents, officials? Can it actually represent its base?</p>
+    </div>
+    <div class="mech">
+      <div class="n">M4</div>
+      <div class="h">Redundancy &amp; succession</div>
+      <p>Can leadership be passed without losing the institution? Or is everything load-bearing on one person?</p>
+    </div>
+    <div class="mech">
+      <div class="n">M5</div>
+      <div class="h">Knowledge transmission</div>
+      <p>Does craft, judgment, history, strategy get passed down? Or does each generation reinvent or lose what came before?</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">§ 3 · the questions</span>Nine candidate research questions. Score them. React to them. Workshop them.</h2>
+  <p class="section-lede">Three criteria. <em>Field learning</em>: how much does answering this teach the field? <em>Practice</em>: how much does it inform what organizers actually do? <em>Paradigm shift</em>: how much does it move elite, funder, and academic understanding? Some questions are about organizational properties. Some are about leadership and the work organizers do on themselves. Some are about conditions. We are not asking them all in one report. We are trying to figure out which ones to ask.</p>
+
+  <div id="rqs"></div>
+</section>
+
+<section>
+  <h2><span class="num">§ 4 · the prompt</span>What would change your work?</h2>
+  <div class="prompt-box">
+    <div class="inner">
+      <div class="mono">For the room · anonymously or signed</div>
+      <div class="q">If you had the answer <em>one year from now</em>, what question would change how (or how effectively) <em>you</em> do your work?</div>
+      <div class="sub">Not "what should the field study." What would change <em>your</em> next move. Specificity is more useful than scope.</div>
+      <textarea id="prompt-input" placeholder="Type freely. Half-formed thoughts welcome."></textarea>
+      <div class="post">
+        <input id="prompt-name" type="text" placeholder="Name (optional)" />
+        <button id="prompt-submit">Add to the room</button>
+      </div>
+      <div class="responses" id="prompt-responses-wrap" style="display:none">
+        <div class="h">In the room</div>
+        <div id="prompt-responses"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">§ 5 · open box</span>Add a research question.</h2>
+  <div class="submit-rq">
+    <div class="inner">
+      <span class="mono">Free-form · the nine above are not the universe</span>
+      <h3>What's the question we're missing?</h3>
+      <p>If a question has been bugging you (about your own work, about the field, about what we don't know but should), drop it here. Submitted questions get added to the deck for a second round of scoring.</p>
+      <textarea id="rq-input" placeholder="A question you'd want CP2 to ask..."></textarea>
+      <div class="post">
+        <input id="rq-name" type="text" placeholder="Name (optional)" />
+        <button id="rq-submit">Submit question</button>
+      </div>
+      <div class="submitted" id="rq-submitted-wrap" style="display:none">
+        <div class="h">Submitted questions</div>
+        <div id="rq-submitted"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">Civic Power II · workshop draft</span>
+  Internal working space. Do not circulate. The questions, scoring, and submissions in this room shape what gets published. Be in it however serves you. Quiet reads are fine. Half-formed thoughts are welcome.
+</footer>
+
+</main>
+
+<script>
+const SHARED_PASSWORD = "civicpower";
+const STORAGE_KEY = "cp2-state-v2";
+
+const RQS = [
+  {
+    id: "rq1",
+    q: "Within a state (same legislature, same political environment), what explains the variance in IPOs' ability to <em>convert participation into policy and governing power</em>?",
+    htw: "Compare orgs in the same state on policy outputs (legislation moved, governing seats held, base retained, defensive holds) while controlling for state political environment. Pair with within-org organizing data to see which organizational properties track to which kinds of conversion. The within-state design is the lever Prisms didn't have at this scale.",
+    seedScores: [4.5, 4.2, 4.7],
+    seedReacts: { strong: 7, close: 3, no: 1 },
+    seedComments: []
+  },
+  {
+    id: "rq2",
+    q: "<em>Prisms</em> showed organized constituencies can refract participation into power. What is the internal architecture of that refraction? Which organizational properties drive (or threaten) it, and how do they vary?",
+    htw: "Operationalize the five candidate mechanisms (agency, bandwidth, signal credibility, succession, transmission). Score each org on each mechanism using attendance/network data and qualitative case work. Decompose 'power' into legislation, governing presence, base retention, and leadership pipeline. Test which mechanisms drive each outcome, and which threaten it (over-functioning leadership, brittle succession, captured signal). CP2 stands on Prisms; the move is from existence to architecture.",
+    seedScores: [4.4, 4.7, 4.5],
+    seedReacts: { strong: 9, close: 2, no: 0 },
+    seedComments: []
+  },
+  {
+    id: "rq3",
+    q: "What distinguishes orgs producing <em>formation-for-agency</em> from those producing <em>participation-without-formation</em>?",
+    htw: "Trace member trajectories. Do people enter as participants and leave as organizers? Compare leadership pipelines, internal training, decision-making structures. Formation-for-deployment is the contrast: same word, different output.",
+    seedScores: [4.3, 4.0, 4.9],
+    seedReacts: { strong: 8, close: 4, no: 0 },
+    seedComments: []
+  },
+  {
+    id: "rq4",
+    q: "Why do some orgs convert <em>election-year mobilization into governing-season power</em>, while others lose their base after Election Day?",
+    htw: "Track base activity, leadership retention, and policy engagement in the 18 months after an election cycle. Look at orgs that ran similar election-year programs but produced different governing-season profiles. The sandcastle question.",
+    seedScores: [4.1, 4.5, 4.4],
+    seedReacts: { strong: 6, close: 5, no: 1 },
+    seedComments: []
+  },
+  {
+    id: "rq5",
+    q: "What do organizations actually do that <em>produces leaders</em>? Not activists, not participants. People with followings, embedded in relational fabric, who develop others.",
+    htw: "Define purple line leader operationally: someone with a measurable following (people they have organized into a relationship, not just events they have attended). Track production rates over time and across orgs. Map what differs in orgs that produce them at scale: training cadence, one-to-one practice, member-to-leader transitions, the sift toward higher-leverage relationships. Network charts paired with case work, not headcount.",
+    seedScores: [4.5, 4.7, 4.6],
+    seedReacts: { strong: 10, close: 1, no: 0 },
+    seedComments: []
+  },
+  {
+    id: "rq6",
+    q: "What enables an organizer to make <em>the ratio shift</em>: from doing the work themselves (recruiting, task-managing, turnout) to organizing through teams led by leaders who develop others?",
+    htw: "Longitudinal data on organizers in development cohorts. Indicators include relinquishing control, time spent on top-leader development versus task execution, recruitment yields that scale through networks rather than direct contact, and the sift toward higher-power people over time. Internal work too: the move from 'my value is doing things for others' to power and delegation. Perfection is not power. Control is not power.",
+    seedScores: [4.0, 4.9, 4.2],
+    seedReacts: { strong: 8, close: 3, no: 1 },
+    seedComments: []
+  },
+  {
+    id: "rq7",
+    q: "What role does a <em>manufactured power objective</em> (a defined power horizon, far enough out to design the arc) play in producing the conditions under which organizing leadership develops?",
+    htw: "Compare orgs operating with a real power objective ('we are going to create a showdown in the legislature on corporate tax in 2027') versus those running activity-organized programs without one. Test whether the presence of a horizon makes possible the bite-sized agentic pieces members can lead. Electoral cycles supply the horizon for free; non-electoral organizing has to manufacture it. That manufacture is the variable.",
+    seedScores: [4.2, 4.4, 4.3],
+    seedReacts: { strong: 6, close: 4, no: 1 },
+    seedComments: []
+  },
+  {
+    id: "rq8",
+    q: "Under what conditions does the <em>probability of organizing success</em> become high enough that an organizer can decide what is winnable now, and what becomes winnable as they build?",
+    htw: "Identify the conditions (org properties, leader counts, resources, opposition) under which historic wins clustered. Build something like a probability function: at this size, with this many purple line leaders, against this kind of target, the win rate is X. Test against actual campaign outcomes. The point isn't determinism. It's accessibility: an organizer holding a real probability map can tell a member what's possible now versus what they're building toward.",
+    seedScores: [3.9, 4.7, 4.0],
+    seedReacts: { strong: 7, close: 3, no: 0 },
+    seedComments: []
+  },
+  {
+    id: "rq9",
+    q: "Under conditions of <em>authoritarian consolidation and surge mobilization</em>, what organizational properties enable conversion of participation into durable governing power?",
+    htw: "Anchor the analysis to current conditions explicitly. Compare orgs operating in surge moments (mass mobilization waves, rapid-response deployment, crisis floor) on what they did with the input. The implicit comparison is to baseline conditions: which mechanisms get more important when the field is overwhelmed? Which collapse under pressure? Surge is a stress test for organizational form.",
+    seedScores: [4.0, 4.5, 4.6],
+    seedReacts: { strong: 7, close: 4, no: 1 },
+    seedComments: []
+  }
+];
+
+const gate = document.getElementById('gate');
+const gateInput = document.getElementById('gate-input');
+const gateBtn = document.getElementById('gate-btn');
+const gateErr = document.getElementById('gate-err');
+const content = document.getElementById('content');
+
+function tryEnter(){
+  if (gateInput.value === SHARED_PASSWORD) {
+    sessionStorage.setItem('cp2-gate', 'open');
+    show();
+  } else {
+    gateErr.textContent = "Not the password.";
+    gateInput.focus(); gateInput.select();
+  }
+}
+gateBtn.addEventListener('click', tryEnter);
+gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryEnter(); });
+
+function show(){ gate.style.display = 'none'; content.style.display = 'block'; render(); }
+if (sessionStorage.getItem('cp2-gate') === 'open') show(); else gateInput.focus();
+
+function loadState(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
+function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function getRQState(rqId){
+  const s = loadState();
+  if (!s.rqs) s.rqs = {};
+  if (!s.rqs[rqId]) {
+    const seed = RQS.find(r => r.id === rqId);
+    s.rqs[rqId] = {
+      myScores: [null, null, null],
+      myReact: null,
+      seedScoreSum: seed.seedScores.map(x => x * 8),
+      seedScoreN: 8,
+      reacts: { ...seed.seedReacts },
+      comments: [...seed.seedComments]
+    };
+    saveState(s);
+  }
+  return s.rqs[rqId];
+}
+function setRQState(rqId, partial){ const s = loadState(); s.rqs[rqId] = { ...s.rqs[rqId], ...partial }; saveState(s); }
+function avg(rqState, axis){
+  const sum = rqState.seedScoreSum[axis] + (rqState.myScores[axis] || 0);
+  const n = rqState.seedScoreN + (rqState.myScores[axis] !== null ? 1 : 0);
+  return (sum / n).toFixed(1);
+}
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+function renderRQs(){
+  const wrap = document.getElementById('rqs');
+  wrap.innerHTML = RQS.map((r, i) => {
+    const st = getRQState(r.id);
+    return `
+      <div class="rq" data-id="${r.id}">
+        <div class="num">RQ · ${String(i+1).padStart(2,'0')}</div>
+        <div class="inner">
+          <div class="q">${r.q}</div>
+          <button class="htw-toggle">+ how would we know?</button>
+          <div class="htw">${r.htw}</div>
+          <div class="scoring">
+            ${['Field learning','Informs practice','Paradigm shift'].map((label, ax) => `
+              <div class="axis">
+                <div class="label"><span>${label}</span><span class="v" id="${r.id}-v-${ax}">${st.myScores[ax] ?? '—'}</span></div>
+                <input type="range" min="1" max="5" step="0.5" value="${st.myScores[ax] ?? 3}" data-axis="${ax}" data-rq="${r.id}" />
+                <div class="avg">avg ${avg(st, ax)} · n=${st.seedScoreN + (st.myScores[ax] !== null ? 1 : 0)}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="reacts">
+            <button data-react="strong" class="${st.myReact === 'strong' ? 'active' : ''}">Strong question <span class="ct">${st.reacts.strong}</span></button>
+            <button data-react="close" class="${st.myReact === 'close' ? 'active' : ''}">Close, needs reformulating <span class="ct">${st.reacts.close}</span></button>
+            <button data-react="no" class="${st.myReact === 'no' ? 'active' : ''}">Not this one <span class="ct">${st.reacts.no}</span></button>
+          </div>
+          <div class="threads">
+            <div class="header"><span>Workshop · ${st.comments.length} note${st.comments.length===1?'':'s'}</span></div>
+            <div class="comments-list">
+              ${st.comments.map(c => `
+                <div class="comment">
+                  <div class="meta">${c.name || 'anonymous'} · ${c.ts}</div>
+                  <div class="body">${escapeHtml(c.body)}</div>
+                </div>
+              `).join('') || '<div class="muted" style="font-size:12.5px;font-style:italic;padding:6px 0">No notes yet. Reformulations, pushback, alternative phrasings, all welcome.</div>'}
+            </div>
+            <textarea placeholder="Workshop this question. Alternative phrasings, pushback, what's missing..."></textarea>
+            <div class="post">
+              <input type="text" placeholder="Name (optional)" />
+              <button>Post note</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  wrap.querySelectorAll('.rq').forEach(card => {
+    const id = card.dataset.id;
+    card.querySelector('.htw-toggle').addEventListener('click', () => {
+      card.classList.toggle('open');
+      card.querySelector('.htw-toggle').textContent = card.classList.contains('open') ? '− hide' : '+ how would we know?';
+    });
+    card.querySelectorAll('input[type=range]').forEach(slider => {
+      slider.addEventListener('input', () => {
+        const ax = +slider.dataset.axis, v = +slider.value;
+        const st = getRQState(id);
+        st.myScores[ax] = v;
+        setRQState(id, { myScores: st.myScores });
+        card.querySelector(`#${id}-v-${ax}`).textContent = v;
+        card.querySelectorAll('.scoring .avg')[ax].textContent = `avg ${avg(st, ax)} · n=${st.seedScoreN + 1}`;
+      });
+    });
+    card.querySelectorAll('.reacts button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const r = btn.dataset.react, st = getRQState(id);
+        if (st.myReact === r) { st.reacts[r]--; st.myReact = null; }
+        else { if (st.myReact) st.reacts[st.myReact]--; st.reacts[r]++; st.myReact = r; }
+        setRQState(id, { reacts: st.reacts, myReact: st.myReact });
+        card.querySelectorAll('.reacts button').forEach(b => {
+          const rt = b.dataset.react;
+          b.classList.toggle('active', st.myReact === rt);
+          b.querySelector('.ct').textContent = st.reacts[rt];
+        });
+      });
+    });
+    const ta = card.querySelector('.threads textarea');
+    const nameInput = card.querySelector('.threads .post input');
+    const postBtn = card.querySelector('.threads .post button');
+    postBtn.addEventListener('click', () => {
+      const body = ta.value.trim(); if (!body) return;
+      const st = getRQState(id);
+      st.comments.push({ body, name: nameInput.value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
+      setRQState(id, { comments: st.comments });
+      ta.value = '';
+      renderRQs();
+    });
+  });
+}
+
+function renderPrompt(){
+  const s = loadState();
+  const list = s.promptResponses || [];
+  const wrap = document.getElementById('prompt-responses-wrap');
+  const target = document.getElementById('prompt-responses');
+  if (list.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  target.innerHTML = list.map(r => `<div class="response"><div class="meta">${r.name || 'anonymous'} · ${r.ts}</div>${escapeHtml(r.body)}</div>`).join('');
+}
+document.getElementById('prompt-submit').addEventListener('click', () => {
+  const body = document.getElementById('prompt-input').value.trim(); if (!body) return;
+  const s = loadState(); if (!s.promptResponses) s.promptResponses = [];
+  s.promptResponses.unshift({ body, name: document.getElementById('prompt-name').value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
+  saveState(s);
+  document.getElementById('prompt-input').value = '';
+  renderPrompt();
+});
+
+function renderSubmittedRQs(){
+  const s = loadState();
+  const list = s.submittedRQs || [];
+  const wrap = document.getElementById('rq-submitted-wrap');
+  const target = document.getElementById('rq-submitted');
+  if (list.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  target.innerHTML = list.map(r => `<div class="sub-item"><div class="meta">${r.name || 'anonymous'} · ${r.ts}</div><div class="body">${escapeHtml(r.body)}</div></div>`).join('');
+}
+document.getElementById('rq-submit').addEventListener('click', () => {
+  const body = document.getElementById('rq-input').value.trim(); if (!body) return;
+  const s = loadState(); if (!s.submittedRQs) s.submittedRQs = [];
+  s.submittedRQs.unshift({ body, name: document.getElementById('rq-name').value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
+  saveState(s);
+  document.getElementById('rq-input').value = '';
+  renderSubmittedRQs();
+});
+
+function render(){ renderRQs(); renderPrompt(); renderSubmittedRQs(); }
+</script>
+</body>
+</html>

@@ -1,233 +1,194 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scheme-aizome">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Civic Power II · research questions in workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --paper:#f1ead6;
-    --bone:#fbf6e8;
-    --ink:#161514;
-    --ink-soft:#3a352d;
-    --ink-mute:#7a7263;
-    --rule:#cdc3a8;
-
-    --emerald:#0e5944;
-    --emerald-deep:#073226;
-    --sapphire:#1c3478;
-    --sapphire-deep:#13245a;
-    --amethyst:#5d2a78;
-    --amethyst-deep:#3d1a52;
-    --citrine:#d2a02a;
-    --citrine-deep:#a07614;
-    --citrine-light:#e3bb52;
-    --topaz:#b8893d;
-
-    --display:"Space Grotesk", system-ui, sans-serif;
-    --sans:"Inter", system-ui, sans-serif;
-    --mono:"JetBrains Mono", ui-monospace, monospace;
+  /* ---- Aizome + Vermillion (Civic Power Lab default) ---- */
+  :root {
+    --paper:       #efe6d1;
+    --cream:       #efe6d1;
+    --cream-2:     #e6dcc2;
+    --rule:        #cec2a8;
+    --ink:         #171514;
+    --ink-2:       #332f2b;
+    --mute:        #6a6256;
+    --cobalt:      #13306b;
+    --cobalt-deep: #0a204e;
+    --terracotta:  #b7432b;
+    --olive:       #6b7a3a;
+    --gold:        #e8a663;
+    --peacock-deep:#0d3d45;
+    --headline-bg: #0a204e;
+    --headline-text: #f0e7d1;
+    --headline-em: #e8a663;
+    --headline-mute: #aebad8;
+    --font-display: "Source Serif 4", Georgia, serif;
+    --font-sans:    "Work Sans", system-ui, sans-serif;
+    --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+    --font-heavy:   "Bricolage Grotesque", system-ui, sans-serif;
   }
+
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-  a{color:var(--emerald)}
-  .display{font-family:var(--display);letter-spacing:-.01em}
-  .mono{font-family:var(--mono);font-size:.78em;letter-spacing:.06em;text-transform:uppercase}
-  .muted{color:var(--ink-mute)}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--cobalt)}
+  .mono{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+  .muted{color:var(--mute)}
 
-  /* Bulcão tile row at top — small, tasteful */
-  .tile-row{
-    display:grid;
-    grid-template-columns:repeat(8, 1fr);
-    height:46px;
-    border-bottom:1px solid var(--rule);
-  }
-  .tile{position:relative;overflow:hidden}
-  .tile + .tile{border-left:1px solid rgba(133,122,99,.18)}
-  .tile > i{display:block;position:absolute}
-
-  .tile.t-square > i{
-    left:34%;top:28%;width:32%;height:44%;
-  }
-  .tile.t-triangle > i{
-    left:50%;top:54%;
-    transform:translate(-50%,-50%);
-    width:30%;height:44%;
-    clip-path:polygon(50% 0, 100% 100%, 0 100%);
-  }
-  .tile.t-semi > i{
-    left:34%;right:34%;
-    top:36%;bottom:22%;
-    border-radius:50% 50% 0 0 / 100% 100% 0 0;
-  }
-  .tile.t-quarter > i{
-    bottom:22%;right:34%;
-    width:32%;height:48%;
-    border-top-left-radius:100% 100%;
-  }
-
-  .tile > i.c-em{background:var(--emerald)}
-  .tile > i.c-sa{background:var(--sapphire)}
-  .tile > i.c-am{background:var(--amethyst)}
-  .tile > i.c-ci{background:var(--citrine)}
-
-  /* gate */
+  /* ---- Gate ---- */
   #gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:50}
-  #gate .card{background:var(--bone);border:2px solid var(--ink);padding:40px 44px;max-width:440px;width:90%;position:relative}
-  #gate .card::before{content:"";position:absolute;top:-2px;left:-2px;width:24px;height:24px;background:var(--amethyst)}
-  #gate .card::after{content:"";position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--citrine)}
-  #gate .pre{font-family:var(--mono);font-size:11px;color:var(--amethyst);margin-bottom:6px}
-  #gate h1{font-family:var(--display);font-size:38px;line-height:1.05;margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
-  #gate h1 .acc{color:var(--amethyst)}
-  #gate .small{font-size:13px;color:var(--ink-mute);margin-bottom:24px}
-  #gate input{width:100%;padding:11px 14px;border:1.5px solid var(--ink);background:#fff;font-family:var(--mono);font-size:13px;letter-spacing:.05em}
-  #gate input:focus{outline:none;border-color:var(--emerald)}
-  #gate button{margin-top:12px;width:100%;padding:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
-  #gate button:hover{background:var(--emerald);border-color:var(--emerald)}
-  #gate .err{color:var(--amethyst);font-size:12px;margin-top:10px;min-height:16px}
+  #gate .card{background:var(--cream-2);border:1px solid var(--rule);padding:44px 48px;max-width:460px;width:90%;position:relative}
+  #gate .card::before{content:"";position:absolute;top:0;left:0;width:32px;height:4px;background:var(--cobalt)}
+  #gate .pre{font-family:var(--font-mono);font-size:11px;color:var(--terracotta);letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+  #gate h1{font-family:var(--font-display);font-size:42px;line-height:1.05;margin:0 0 12px;font-weight:400;letter-spacing:-.02em;color:var(--ink)}
+  #gate h1 em{font-style:italic;color:var(--cobalt);font-weight:400}
+  #gate .small{font-family:var(--font-display);font-size:15px;color:var(--ink-2);margin-bottom:26px;line-height:1.5;max-width:38ch}
+  #gate input{width:100%;padding:12px 14px;border:1px solid var(--rule);background:#fff;font-family:var(--font-mono);font-size:13px;letter-spacing:.05em;color:var(--ink)}
+  #gate input:focus{outline:none;border-color:var(--cobalt)}
+  #gate button{margin-top:14px;width:100%;padding:13px;border:1px solid var(--cobalt);background:var(--cobalt);color:var(--paper);font-family:var(--font-sans);font-size:13.5px;font-weight:500;letter-spacing:.05em;cursor:pointer;text-transform:uppercase}
+  #gate button:hover{background:var(--cobalt-deep);border-color:var(--cobalt-deep)}
+  #gate .err{color:var(--terracotta);font-size:13px;margin-top:10px;min-height:18px;font-style:italic;font-family:var(--font-display)}
 
-  main{max-width:980px;margin:0 auto;padding:0 24px 96px}
+  main{max-width:1080px;margin:0 auto;padding:0 32px 96px}
 
-  header.hero{padding:36px 0 0}
-  .kicker{display:flex;align-items:center;gap:12px;color:var(--ink-mute)}
-  .kicker .sq{width:8px;height:8px;background:var(--amethyst)}
-  h1.title{font-family:var(--display);font-size:64px;line-height:.98;margin:18px 0 0;font-weight:700;letter-spacing:-.025em}
-  h1.title .em{color:var(--amethyst)}
-  h1.title .ci{color:var(--citrine-deep)}
-  .lede{font-family:var(--sans);font-size:20px;line-height:1.5;color:var(--ink-soft);margin:22px 0 32px;max-width:720px;font-weight:400}
-  .lede strong{color:var(--ink);font-weight:600}
+  /* ---- Hero ---- */
+  header.hero{padding:64px 0 0;position:relative}
+  .pre-h1{font-family:var(--font-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:20px;font-weight:400}
+  h1.title{font-family:var(--font-display);font-size:clamp(44px, 6.5vw, 96px);line-height:.94;letter-spacing:-.03em;font-weight:400;margin:0;color:var(--ink);max-width:18ch}
+  h1.title em{font-style:italic;color:var(--cobalt);font-weight:400}
+  .hero-lede{font-family:var(--font-display);font-size:clamp(17px, 1.4vw, 21px);line-height:1.55;color:var(--ink-2);max-width:60ch;margin:36px 0 44px}
+  .hero-lede em{font-style:italic;color:var(--cobalt);font-weight:500}
 
-  section{margin-top:64px}
-  h2{font-family:var(--display);font-size:36px;font-weight:700;margin:0 0 14px;letter-spacing:-.015em;line-height:1.1}
-  h2 .num{font-family:var(--mono);font-size:11px;color:var(--amethyst);display:block;margin-bottom:8px;letter-spacing:.14em}
-  .section-lede{font-family:var(--sans);font-size:16px;color:var(--ink-soft);max-width:720px;margin-bottom:30px}
+  /* ---- Bulcão tile band at hero base ---- */
+  .hero-tiles{height:120px;overflow:hidden;background:var(--peacock-deep);margin:0 -32px}
+  .hero-tiles > svg{display:block;width:100%;height:100%}
 
-  /* frame block */
-  .frame{background:var(--bone);border:2px solid var(--ink);padding:0;margin:0 0 24px;position:relative}
-  .frame::before{content:"";position:absolute;top:-2px;left:-2px;width:32px;height:32px;background:var(--amethyst)}
-  .frame .inner{padding:32px 36px}
-  .frame p{margin:0 0 14px;font-size:16px}
+  /* ---- Sections ---- */
+  section{margin-top:80px}
+  h2{font-family:var(--font-display);font-size:clamp(30px, 3.4vw, 44px);font-weight:500;margin:0 0 16px;letter-spacing:-.015em;line-height:1.1;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--cobalt);font-weight:500}
+  h2 .num{font-family:var(--font-mono);font-size:11px;color:var(--terracotta);display:block;margin-bottom:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+  .section-lede{font-family:var(--font-display);font-size:18px;color:var(--ink-2);max-width:62ch;margin-bottom:36px;line-height:1.55}
+  .section-lede em{font-style:italic;color:var(--cobalt);font-weight:500}
+
+  /* ---- Frame block ---- */
+  .frame{background:transparent;padding:0;margin:0 0 24px}
+  .frame p{margin:0 0 22px;font-family:var(--font-display);font-size:17.5px;line-height:1.6;color:var(--ink-2);max-width:64ch;padding-left:22px;border-left:3px solid var(--cobalt)}
+  .frame p:nth-child(2n){border-left-color:var(--terracotta)}
+  .frame p:nth-child(3n){border-left-color:var(--olive)}
   .frame p:last-child{margin-bottom:0}
-  .frame strong{font-family:var(--display);font-weight:700;color:var(--amethyst-deep);font-size:17px}
+  .frame strong{font-weight:500;color:var(--ink);display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+  .frame p:nth-child(2n) strong{color:var(--terracotta)}
+  .frame p:nth-child(3n) strong{color:var(--olive)}
+  .frame p strong{color:var(--cobalt)}
 
-  /* method strip */
-  .method{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:24px;border:2px solid var(--ink)}
-  .method .item{background:var(--bone);padding:22px 24px;border-right:1px solid var(--ink)}
-  .method .item:last-child{border-right:0}
-  .method .item .mono{margin-bottom:10px;display:block}
-  .method .item:nth-child(1) .mono{color:var(--amethyst)}
-  .method .item:nth-child(2) .mono{color:var(--sapphire)}
-  .method .item:nth-child(3) .mono{color:var(--citrine-deep)}
-  .method .item .h{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ink)}
-  .method .item p{margin:0;font-size:14px;color:var(--ink-soft)}
-  @media (max-width:760px){.method{grid-template-columns:1fr}.method .item{border-right:0;border-bottom:1px solid var(--ink)}.method .item:last-child{border-bottom:0}}
+  /* ---- Method strip ---- */
+  .method{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:24px}
+  .method .item{background:var(--cream-2);padding:24px 26px;border-top:3px solid var(--cobalt)}
+  .method .item:nth-child(2){border-top-color:var(--terracotta)}
+  .method .item:nth-child(3){border-top-color:var(--olive)}
+  .method .item .mono{margin-bottom:10px;display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cobalt)}
+  .method .item:nth-child(2) .mono{color:var(--terracotta)}
+  .method .item:nth-child(3) .mono{color:var(--olive)}
+  .method .item .h{font-family:var(--font-display);font-size:22px;font-weight:500;margin-bottom:8px;color:var(--ink);font-style:italic}
+  .method .item p{margin:0;font-size:14.5px;color:var(--ink-2);font-family:var(--font-display);line-height:1.55}
+  @media (max-width:760px){.method{grid-template-columns:1fr}}
 
-  /* mechanisms — five tones, no ruby */
-  .mechs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:18px;border:2px solid var(--ink)}
-  .mech{background:var(--bone);padding:18px 16px;border-right:1px solid var(--ink);position:relative}
-  .mech:last-child{border-right:0}
-  .mech::before{content:"";position:absolute;top:0;left:0;width:24px;height:6px;background:var(--emerald)}
-  .mech:nth-child(2)::before{background:var(--sapphire)}
-  .mech:nth-child(3)::before{background:var(--citrine)}
-  .mech:nth-child(4)::before{background:var(--amethyst)}
-  .mech:nth-child(5)::before{background:var(--topaz)}
-  .mech .n{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin:8px 0 6px}
-  .mech .h{font-family:var(--display);font-weight:700;font-size:17px;margin-bottom:6px;line-height:1.15}
-  .mech p{margin:0;color:var(--ink-soft);font-size:12.5px;line-height:1.45}
-  @media (max-width:760px){.mechs{grid-template-columns:1fr 1fr}.mech{border-right:0;border-bottom:1px solid var(--ink)}}
+  /* ---- Leadership-as-DV mini-section ---- */
+  .dv-block{margin-top:48px;padding:28px 32px;background:var(--cream-2);border-left:3px solid var(--cobalt)}
+  .dv-block h3{font-family:var(--font-display);font-size:24px;font-weight:500;margin:0 0 8px;color:var(--ink);font-style:italic;letter-spacing:-.005em}
+  .dv-block p{margin:0;font-family:var(--font-display);font-size:17px;color:var(--ink-2);line-height:1.55;max-width:64ch}
+  .dv-block em{font-style:italic;color:var(--cobalt);font-weight:500}
 
-  /* RQ cards — five-tone cycle, no ruby */
-  .rq{background:var(--bone);border:2px solid var(--ink);margin:0 0 18px;padding:0;position:relative;overflow:hidden}
-  .rq::before{content:"";position:absolute;top:0;left:0;width:8px;height:100%;background:var(--emerald)}
-  .rq:nth-child(5n+2)::before{background:var(--sapphire)}
-  .rq:nth-child(5n+3)::before{background:var(--citrine)}
-  .rq:nth-child(5n+4)::before{background:var(--amethyst)}
-  .rq:nth-child(5n+5)::before{background:var(--topaz)}
-  .rq .inner{padding:26px 30px 26px 38px}
-  .rq .num{position:absolute;top:18px;right:24px;font-family:var(--mono);font-size:11px;color:var(--ink-mute);letter-spacing:.1em}
-  .rq .q{font-family:var(--display);font-size:23px;line-height:1.25;font-weight:600;margin:0 80px 0 0;letter-spacing:-.005em}
-  .rq .q em{color:var(--amethyst);font-style:normal;background:linear-gradient(to bottom, transparent 60%, rgba(93,42,120,.16) 60%);padding:0 2px}
-  .rq .htw-toggle{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--citrine-deep);background:none;border:0;padding:0;cursor:pointer;letter-spacing:.08em;font-weight:500}
-  .rq .htw-toggle:hover{color:var(--emerald)}
-  .rq .htw{display:none;margin-top:12px;padding:14px 18px;background:var(--paper);border-left:4px solid var(--citrine);font-size:14px;color:var(--ink-soft)}
+  /* ---- RQ cards ---- */
+  .rq{background:var(--cream-2);margin:0 0 18px;padding:0;position:relative;border-top:3px solid var(--cobalt)}
+  .rq:nth-child(3n){border-top-color:var(--terracotta)}
+  .rq:nth-child(3n+2){border-top-color:var(--olive)}
+  .rq .inner{padding:26px 32px}
+  .rq .num{position:absolute;top:14px;right:24px;font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase}
+  .rq .q{font-family:var(--font-display);font-size:23px;line-height:1.35;font-weight:400;margin:8px 80px 0 0;color:var(--ink);max-width:48ch}
+  .rq .q em{font-style:italic;color:var(--cobalt);font-weight:500}
+  .rq:nth-child(3n) .q em{color:var(--terracotta)}
+  .rq:nth-child(3n+2) .q em{color:var(--olive)}
+  .rq .htw-toggle{margin-top:16px;font-family:var(--font-mono);font-size:11px;color:var(--terracotta);background:none;border:0;padding:0;cursor:pointer;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+  .rq .htw-toggle:hover{color:var(--cobalt)}
+  .rq .htw{display:none;margin-top:14px;padding:16px 20px;background:var(--paper);border-left:3px solid var(--terracotta);font-family:var(--font-display);font-size:15px;color:var(--ink-2);line-height:1.55}
   .rq.open .htw{display:block}
 
-  .rq .scoring{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;padding-top:20px;border-top:1px dashed var(--rule)}
+  .rq .scoring{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:24px;padding-top:20px;border-top:1px solid var(--rule)}
   .rq .scoring .axis{font-size:12px}
-  .rq .scoring .axis .label{display:flex;justify-content:space-between;margin-bottom:6px;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.06em}
-  .rq .scoring .axis .label .v{color:var(--emerald);font-weight:700}
-  .rq .scoring input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--rule);outline:none;border-radius:0}
-  .rq .scoring input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--emerald);cursor:pointer;border:2px solid var(--bone);border-radius:0}
-  .rq .scoring input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--emerald);cursor:pointer;border:2px solid var(--bone);border-radius:0}
-  .rq .scoring .avg{font-family:var(--mono);font-size:9px;color:var(--ink-mute);margin-top:4px;letter-spacing:.06em}
+  .rq .scoring .axis .label{display:flex;justify-content:space-between;margin-bottom:8px;font-family:var(--font-mono);font-size:10.5px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase}
+  .rq .scoring .axis .label .v{color:var(--cobalt);font-weight:500}
+  .rq .scoring input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:2px;background:var(--rule);outline:none}
+  .rq .scoring input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--cobalt);cursor:pointer;border:2px solid var(--cream-2);border-radius:50%}
+  .rq .scoring input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--cobalt);cursor:pointer;border:2px solid var(--cream-2);border-radius:50%}
+  .rq .scoring .avg{font-family:var(--font-mono);font-size:9.5px;color:var(--mute);margin-top:6px;letter-spacing:.1em}
 
-  .rq .reacts{display:flex;gap:0;margin-top:20px;flex-wrap:wrap;border:1.5px solid var(--ink)}
-  .rq .reacts button{font-family:var(--sans);font-size:12px;padding:8px 14px;border:0;border-right:1px solid var(--ink);background:var(--bone);cursor:pointer;color:var(--ink-soft);font-weight:500;flex:1}
-  .rq .reacts button:last-child{border-right:0}
-  .rq .reacts button:hover{background:var(--paper)}
-  .rq .reacts button.active{background:var(--emerald);color:var(--bone)}
-  .rq .reacts button .ct{font-family:var(--mono);font-size:10px;margin-left:6px;opacity:.75}
+  .rq .reacts{display:flex;gap:0;margin-top:22px;flex-wrap:wrap}
+  .rq .reacts button{font-family:var(--font-sans);font-size:12.5px;padding:8px 16px;border:1px solid var(--rule);background:transparent;cursor:pointer;color:var(--ink-2);font-weight:400;margin-right:-1px;letter-spacing:.02em}
+  .rq .reacts button:hover{border-color:var(--cobalt);color:var(--cobalt);z-index:1;position:relative}
+  .rq .reacts button.active{border-color:var(--cobalt);background:var(--cobalt);color:var(--paper);z-index:1;position:relative}
+  .rq .reacts button .ct{font-family:var(--font-mono);font-size:10px;margin-left:6px;opacity:.75}
 
-  .rq .threads{margin-top:18px;padding-top:18px;border-top:1px dashed var(--rule)}
-  .rq .threads .header{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:10px}
-  .rq .comment{padding:10px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+  .rq .threads{margin-top:22px;padding-top:18px;border-top:1px solid var(--rule)}
+  .rq .threads .header{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10.5px;color:var(--mute);letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
+  .rq .comment{padding:12px 0;border-bottom:1px solid var(--rule);font-family:var(--font-display);font-size:15px}
   .rq .comment:last-child{border-bottom:0}
-  .rq .comment .meta{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin-bottom:4px;letter-spacing:.04em}
-  .rq .comment .body{color:var(--ink-soft)}
-  .rq textarea{width:100%;border:1.5px solid var(--rule);background:#fff;padding:10px 12px;font-family:var(--sans);font-size:13.5px;resize:vertical;min-height:60px;margin-top:10px}
-  .rq textarea:focus{outline:none;border-color:var(--emerald)}
-  .rq .post{display:flex;gap:8px;margin-top:8px;align-items:center}
-  .rq .post input{flex:0 0 180px;border:1.5px solid var(--rule);background:#fff;padding:8px 10px;font-family:var(--sans);font-size:12px}
-  .rq .post button{padding:8px 16px;border:1.5px solid var(--ink);background:transparent;font-size:12px;cursor:pointer;font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-  .rq .post button:hover{background:var(--ink);color:var(--bone)}
+  .rq .comment .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--mute);margin-bottom:4px;letter-spacing:.08em}
+  .rq .comment .body{color:var(--ink-2);line-height:1.55}
+  .rq textarea{width:100%;border:1px solid var(--rule);background:#fff;padding:12px 14px;font-family:var(--font-display);font-size:15px;line-height:1.5;resize:vertical;min-height:64px;margin-top:12px;color:var(--ink)}
+  .rq textarea:focus{outline:none;border-color:var(--cobalt)}
+  .rq .post{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .rq .post input{flex:0 0 200px;border:1px solid var(--rule);background:#fff;padding:9px 12px;font-family:var(--font-mono);font-size:12px;color:var(--ink)}
+  .rq .post button{padding:9px 18px;border:1px solid var(--cobalt);background:transparent;font-size:12.5px;cursor:pointer;font-family:var(--font-sans);font-weight:500;color:var(--cobalt);letter-spacing:.04em;text-transform:uppercase}
+  .rq .post button:hover{background:var(--cobalt);color:var(--paper)}
 
-  /* prompt box — deep amethyst with citrine accents */
-  .prompt-box{background:var(--amethyst-deep);color:var(--bone);padding:0;margin-top:20px;position:relative;border:2px solid var(--ink)}
-  .prompt-box::after{content:"";position:absolute;bottom:0;right:0;width:64px;height:64px;background:var(--citrine)}
-  .prompt-box::before{content:"";position:absolute;top:0;left:0;width:96px;height:8px;background:var(--emerald)}
-  .prompt-box .inner{padding:48px 44px 42px;position:relative;z-index:1}
-  .prompt-box .mono{color:var(--citrine-light);letter-spacing:.1em}
-  .prompt-box .q{font-family:var(--display);font-size:32px;line-height:1.2;margin:14px 0 8px;font-weight:700;letter-spacing:-.015em;color:#f6e9c8}
-  .prompt-box .q em{font-style:normal;background:linear-gradient(to bottom, transparent 65%, var(--citrine) 65%, var(--citrine) 92%, transparent 92%);padding:0 4px;color:#fff}
-  .prompt-box .sub{font-size:14px;color:#d6c89c;max-width:620px;margin-bottom:24px}
-  .prompt-box textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(227,187,82,.45);color:var(--bone);padding:14px 16px;font-family:var(--sans);font-size:16px;line-height:1.5;resize:vertical;min-height:120px}
-  .prompt-box textarea::placeholder{color:rgba(255,243,210,.45)}
-  .prompt-box textarea:focus{outline:none;border-color:var(--citrine-light)}
-  .prompt-box .post{display:flex;gap:10px;margin-top:12px;align-items:center}
-  .prompt-box .post input{background:rgba(255,255,255,.05);border:1.5px solid rgba(227,187,82,.45);color:var(--bone);padding:10px 12px;font-family:var(--sans);font-size:13px;flex:0 0 220px}
-  .prompt-box .post input::placeholder{color:rgba(255,243,210,.45)}
-  .prompt-box .post button{padding:10px 22px;border:1.5px solid var(--citrine);background:var(--citrine);color:var(--amethyst-deep);font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  .prompt-box .post button:hover{background:var(--citrine-light);border-color:var(--citrine-light)}
-  .prompt-box .responses{margin-top:26px;border-top:1px solid rgba(227,187,82,.3);padding-top:18px}
-  .prompt-box .responses .h{font-family:var(--mono);font-size:10px;color:var(--citrine-light);letter-spacing:.1em;margin-bottom:14px}
-  .prompt-box .response{padding:14px 0;border-bottom:1px solid rgba(227,187,82,.15);font-size:14.5px;color:#d6c89c}
+  /* ---- Prompt box ---- */
+  .prompt-box{background:var(--cobalt-deep);color:var(--headline-text);padding:0;margin-top:24px;position:relative;overflow:hidden}
+  .prompt-box .inner{padding:56px 48px 48px;position:relative;z-index:1;max-width:64ch}
+  .prompt-box .mono{color:var(--gold);letter-spacing:.18em;font-family:var(--font-mono);font-size:11px;text-transform:uppercase}
+  .prompt-box .q{font-family:var(--font-display);font-size:clamp(26px, 2.6vw, 34px);line-height:1.25;margin:18px 0 12px;font-weight:500;letter-spacing:-.015em;color:var(--headline-text);max-width:24ch}
+  .prompt-box .q em{font-style:italic;color:var(--gold);font-weight:500}
+  .prompt-box .sub{font-family:var(--font-display);font-size:16px;color:var(--headline-mute);max-width:54ch;margin-bottom:28px;line-height:1.55;font-style:italic}
+  .prompt-box .sub em{font-style:italic;color:var(--gold);font-weight:500}
+  .prompt-box textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(232,166,99,.4);color:var(--headline-text);padding:14px 16px;font-family:var(--font-display);font-size:17px;line-height:1.55;resize:vertical;min-height:130px}
+  .prompt-box textarea::placeholder{color:rgba(240,231,209,.45);font-style:italic}
+  .prompt-box textarea:focus{outline:none;border-color:var(--gold)}
+  .prompt-box .post{display:flex;gap:10px;margin-top:14px;align-items:center}
+  .prompt-box .post input{background:rgba(255,255,255,.06);border:1px solid rgba(232,166,99,.4);color:var(--headline-text);padding:10px 14px;font-family:var(--font-mono);font-size:13px;flex:0 0 220px}
+  .prompt-box .post input::placeholder{color:rgba(240,231,209,.45)}
+  .prompt-box .post button{padding:11px 22px;border:1px solid var(--gold);background:var(--gold);color:var(--cobalt-deep);font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase}
+  .prompt-box .post button:hover{background:#f0b677;border-color:#f0b677}
+  .prompt-box .responses{margin-top:30px;border-top:1px solid rgba(232,166,99,.3);padding-top:20px}
+  .prompt-box .responses .h{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px}
+  .prompt-box .response{padding:16px 0;border-bottom:1px solid rgba(232,166,99,.15);font-family:var(--font-display);font-size:16px;color:var(--headline-mute);line-height:1.55}
   .prompt-box .response:last-child{border-bottom:0}
-  .prompt-box .response .meta{font-family:var(--mono);font-size:10px;color:rgba(255,243,210,.5);margin-bottom:4px}
+  .prompt-box .response .meta{font-family:var(--font-mono);font-size:10.5px;color:rgba(240,231,209,.5);margin-bottom:6px;letter-spacing:.08em}
 
-  /* freeform RQ — sapphire accent */
-  .submit-rq{background:var(--bone);border:2px solid var(--ink);padding:0;margin-top:28px;position:relative}
-  .submit-rq::before{content:"";position:absolute;top:0;left:0;width:100%;height:8px;background:var(--sapphire)}
-  .submit-rq .inner{padding:30px 36px}
-  .submit-rq .mono{color:var(--sapphire)}
-  .submit-rq h3{font-family:var(--display);font-size:26px;font-weight:700;margin:8px 0 6px;letter-spacing:-.015em}
-  .submit-rq p{margin:0 0 16px;color:var(--ink-soft);font-size:14px;max-width:620px}
-  .submit-rq textarea{width:100%;border:1.5px solid var(--rule);background:#fff;padding:12px 14px;font-family:var(--sans);font-size:16px;resize:vertical;min-height:100px}
-  .submit-rq textarea:focus{outline:none;border-color:var(--sapphire)}
-  .submit-rq .post{display:flex;gap:8px;margin-top:10px;align-items:center}
-  .submit-rq .post input{flex:0 0 200px;border:1.5px solid var(--rule);background:#fff;padding:9px 12px;font-family:var(--sans);font-size:12px}
-  .submit-rq .post button{padding:10px 20px;border:1.5px solid var(--sapphire);background:var(--sapphire);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase}
-  .submit-rq .post button:hover{background:var(--sapphire-deep)}
-  .submit-rq .submitted{margin-top:22px}
-  .submit-rq .submitted .h{font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:10px}
-  .submit-rq .sub-item{padding:12px 0;border-top:1px dashed var(--rule);font-size:14px}
-  .submit-rq .sub-item .meta{font-family:var(--mono);font-size:10px;color:var(--ink-mute);margin-bottom:3px}
-  .submit-rq .sub-item .body{font-family:var(--sans);font-size:15.5px;color:var(--ink)}
+  /* ---- Submit RQ box ---- */
+  .submit-rq{background:var(--cream-2);padding:0;margin-top:32px;position:relative;border-top:3px solid var(--terracotta)}
+  .submit-rq .inner{padding:32px 40px}
+  .submit-rq .mono{color:var(--terracotta);font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  .submit-rq h3{font-family:var(--font-display);font-size:28px;font-weight:500;margin:10px 0 8px;letter-spacing:-.01em;font-style:italic;color:var(--ink)}
+  .submit-rq p{margin:0 0 18px;color:var(--ink-2);font-family:var(--font-display);font-size:16px;max-width:62ch;line-height:1.55}
+  .submit-rq textarea{width:100%;border:1px solid var(--rule);background:#fff;padding:14px 16px;font-family:var(--font-display);font-size:17px;line-height:1.5;resize:vertical;min-height:110px;color:var(--ink)}
+  .submit-rq textarea:focus{outline:none;border-color:var(--terracotta)}
+  .submit-rq .post{display:flex;gap:10px;margin-top:12px;align-items:center}
+  .submit-rq .post input{flex:0 0 220px;border:1px solid var(--rule);background:#fff;padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--ink)}
+  .submit-rq .post button{padding:11px 22px;border:1px solid var(--terracotta);background:var(--terracotta);color:var(--paper);font-family:var(--font-sans);font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:.06em;text-transform:uppercase}
+  .submit-rq .post button:hover{background:#8e3220;border-color:#8e3220}
+  .submit-rq .submitted{margin-top:24px}
+  .submit-rq .submitted .h{font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px}
+  .submit-rq .sub-item{padding:14px 0;border-top:1px solid var(--rule);font-family:var(--font-display);font-size:16px}
+  .submit-rq .sub-item .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--mute);margin-bottom:4px;letter-spacing:.08em}
+  .submit-rq .sub-item .body{color:var(--ink);line-height:1.55}
 
-  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-mute)}
-  footer .mono{display:block;margin-bottom:6px;color:var(--amethyst)}
+  footer{margin-top:96px;padding-top:32px;border-top:1px solid var(--rule);font-family:var(--font-display);font-size:14px;color:var(--mute);font-style:italic;line-height:1.6}
+  footer .mono{display:block;margin-bottom:8px;color:var(--terracotta);font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -235,7 +196,7 @@
 <div id="gate">
   <div class="card">
     <div class="pre">Civic Power II · Workshop</div>
-    <h1>Democracy <span class="acc">R&amp;D</span></h1>
+    <h1>Democracy <em>R&amp;D</em></h1>
     <div class="small">A working room. Enter the shared password to read the research questions and add your thinking.</div>
     <input id="gate-input" type="password" placeholder="shared password" autocomplete="off" />
     <button id="gate-btn">Enter</button>
@@ -245,38 +206,30 @@
 
 <main id="content" style="display:none">
 
-<div class="tile-row">
-  <div class="tile t-square"><i class="c-em"></i></div>
-  <div class="tile t-triangle"><i class="c-sa"></i></div>
-  <div class="tile t-semi"><i class="c-am"></i></div>
-  <div class="tile t-quarter"><i class="c-ci"></i></div>
-  <div class="tile t-square"><i class="c-ci"></i></div>
-  <div class="tile t-triangle"><i class="c-am"></i></div>
-  <div class="tile t-semi"><i class="c-sa"></i></div>
-  <div class="tile t-quarter"><i class="c-em"></i></div>
-</div>
-
 <header class="hero">
-  <div class="kicker"><span class="sq"></span><span class="mono">Civic Power Report 2 · in workshop · draft</span></div>
-  <h1 class="title display">Democracy<br/>needs an<br/><span class="em">R&amp;D</span> <span class="ci">function</span>.</h1>
-  <p class="lede">Democracy doesn't have an R&amp;D function. The work runs on hunch and vendor pitch and the operators who figured it out alone. We want CP2 to ask better questions than that. <strong>This room is where we figure out which ones.</strong></p>
+  <div class="pre-h1">Civic Power Report 2 · in workshop · draft</div>
+  <h1 class="title">Democracy needs an <em>R&amp;D function</em>.</h1>
+  <p class="hero-lede">Democracy has a very limited <em>R&amp;D function</em>. Most of the work runs on hunches, vendor pitches, self-reported survey data, and mobilizing counts that obscure much of the actual power-building work. <em>Civic Power II</em> can be an investment in changing that, i.e. in building the shared questions, evidence, and learning infrastructure the field has never had.</p>
 </header>
 
+<div class="hero-tiles" data-tiles
+     data-cols="24" data-rows="2" data-seed="909"
+     data-bg="#0d3d45"
+     data-colors="#f1ead7,#e8a663,#b7432b"></div>
+
 <section>
-  <h2><span class="num">§ 1 · the frame</span>What CP1 surfaced, and what CP2 has to do differently.</h2>
+  <h2><span class="num">§ 1 · the frame</span>What CP1 surfaced, and what CP2 has to do <em>differently</em>.</h2>
   <div class="frame">
-    <div class="inner">
-      <p><strong>Better field is downstream of organizing capacity.</strong> Relational, deeper voter contact is not a tactic a firm can manufacture. It is a lagging indicator of organized base. CP1 gestured at this. CP2 has to land it.</p>
-      <p><strong>Mass participation needs a converter.</strong> Without organized, formation-centered organizations channeling it, participation dissipates. The MN labor-faith-community alignment was exactly that. It turned broad participation into concentrated, directed power capable of moving legislation and governing.</p>
-      <p><strong>Scale and depth are not opposites.</strong> But sequencing matters. You cannot rapid-respond your way to governing power. You can only rapid-respond from organized bases that already exist. CP2 publishes 18 months further into authoritarian consolidation, with more mobilization-without-translation to reckon with.</p>
-      <p><strong>Capture is the live risk.</strong> Clean numbers get stripped from the conditions that produce them. They become memes, then funder targets, then the thing you have to walk back for years. CP2 has to publish in a way that makes capture harder, not easier.</p>
-      <p><strong>Three things are doing the work.</strong> Conditions. Organization. Leadership. The variation we see across orgs (and inside orgs over time) lives in how those three interact.</p>
-    </div>
+    <p><strong>Better field is downstream of organizing capacity.</strong> Relational, deeper voter contact is not a tactic a firm can manufacture. It is a lagging indicator of organized base. CP1 gestured at this. CP2 has to land it.</p>
+    <p><strong>Mass participation needs a converter.</strong> Without organized, formation-centered organizations channeling it, participation dissipates. The MN labor-faith-community alignment was exactly that. It turned broad participation into concentrated, directed power capable of moving legislation and governing.</p>
+    <p><strong>Scale and depth are not opposites.</strong> But sequencing matters. You cannot rapid-respond your way to governing power. You can only rapid-respond from organized bases that already exist. CP2 publishes 18 months further into authoritarian consolidation, with more mobilization-without-translation to reckon with.</p>
+    <p><strong>Capture is the live risk.</strong> Clean numbers get stripped from the conditions that produce them. They become memes, then funder targets, then the thing you have to walk back for years. CP2 has to publish in a way that makes capture harder, not easier.</p>
+    <p><strong>Three things are doing the work.</strong> Conditions. Organization. Leadership. The variation we see across orgs (and inside orgs over time) lives in how those three interact.</p>
   </div>
 </section>
 
 <section>
-  <h2><span class="num">§ 2 · the method</span>How the question changes when the unit of analysis changes.</h2>
+  <h2><span class="num">§ 2 · the method</span>How the question changes when the unit of <em>analysis</em> changes.</h2>
   <p class="section-lede">CP2 centers <em>the organization</em> as the unit of analysis. Individual data (attendance, network position, event sequences) becomes evidence about organizational properties. Same data, sharper questions. Each org is a deeply observed case.</p>
 
   <div class="method">
@@ -297,49 +250,21 @@
     </div>
   </div>
 
-  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">What we're trying to deeply understand and explain: leadership.</h3>
-  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:720px">Not as a wild card sitting next to the mechanisms. As <em>the dependent variable</em>. The production of purple line leaders (people with followings, embedded in relational fabric, who develop others) is what we are trying to deeply understand and explain. The mechanisms below are candidate explanations.</p>
-
-  <h3 style="font-family:var(--display);font-size:22px;margin:36px 0 6px;font-weight:700;letter-spacing:-.01em">Five candidate mechanisms</h3>
-  <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 4px;max-width:720px">Properties that (we think) produce leaders and convert participation into durable power. None can be hit by running more events. Each requires actual organizational depth. Harder to fake. Harder to capture.</p>
-  <div class="mechs">
-    <div class="mech">
-      <div class="n">M1</div>
-      <div class="h">Culture of agency</div>
-      <p>People as political actors with judgment and initiative. Includes the internal work organizers themselves do: give up control, refuse caretaking, act with their own gumption.</p>
-    </div>
-    <div class="mech">
-      <div class="n">M2</div>
-      <div class="h">Relational bandwidth</div>
-      <p>Density and quality of relationships running through the org. What can flow through it: information, trust, coordination, mutual obligation.</p>
-    </div>
-    <div class="mech">
-      <div class="n">M3</div>
-      <div class="h">Signal credibility</div>
-      <p>When the org speaks or acts, does it carry weight with members, allies, opponents, officials? Can it actually represent its base?</p>
-    </div>
-    <div class="mech">
-      <div class="n">M4</div>
-      <div class="h">Redundancy &amp; succession</div>
-      <p>Can leadership be passed without losing the institution? Or is everything load-bearing on one person?</p>
-    </div>
-    <div class="mech">
-      <div class="n">M5</div>
-      <div class="h">Knowledge transmission</div>
-      <p>Does craft, judgment, history, strategy get passed down? Or does each generation reinvent or lose what came before?</p>
-    </div>
+  <div class="dv-block">
+    <h3>What we're trying to deeply understand and explain: leadership.</h3>
+    <p>Not as a wild card sitting next to the mechanisms. As <em>the dependent variable</em>. The production of purple line leaders (people with followings, embedded in relational fabric, who develop others) is what we are trying to deeply understand and explain.</p>
   </div>
 </section>
 
 <section>
-  <h2><span class="num">§ 3 · the questions</span>Nine questions, in working draft.</h2>
-  <p class="section-lede">Three criteria for scoring. <em>Field learning</em>: how much does answering this teach the field? <em>Practice</em>: how much does it inform what organizers actually do? <em>Paradigm shift</em>: how much does it move elite, funder, and academic understanding? We won't run all nine in one report. The point of this room is to figure out which to keep.</p>
+  <h2><span class="num">§ 3 · the questions</span>Nine questions, in <em>working draft</em>.</h2>
+  <p class="section-lede">Three criteria for scoring. <em>Field learning</em>: how much does answering this teach the field? <em>Practice</em>: how much does it inform what organizers actually do? <em>Paradigm shift</em>: how much does it move elite, funder, and academic understanding? We won't run all nine in one study. The point of this room is to figure out which to keep.</p>
 
   <div id="rqs"></div>
 </section>
 
 <section>
-  <h2><span class="num">§ 4 · the prompt</span>What would change your work?</h2>
+  <h2><span class="num">§ 4 · the prompt</span>What would change <em>your</em> work?</h2>
   <div class="prompt-box">
     <div class="inner">
       <div class="mono">For the room · anonymously or signed</div>
@@ -359,7 +284,7 @@
 </section>
 
 <section>
-  <h2><span class="num">§ 5 · open box</span>Add a research question.</h2>
+  <h2><span class="num">§ 5 · open box</span>Add a <em>research question</em>.</h2>
   <div class="submit-rq">
     <div class="inner">
       <span class="mono">Free-form · the nine above are not the universe</span>
@@ -380,14 +305,51 @@
 
 <footer>
   <span class="mono">Civic Power II · workshop draft</span>
-  Internal working space. Do not circulate. The questions, scoring, and submissions in this room shape what gets published. Be in it however serves you. Quiet reads are fine. Half-formed thoughts are welcome.
+  Internal working space. Do not circulate. The questions, scoring, and submissions in this room shape what we will study.
 </footer>
 
 </main>
 
 <script>
+/* ---- Bulcão tile renderer (adapted from Civic Power Lab) ---- */
+(function(){
+  const MOTIFS = {
+    disc: (color) => `<path d="M 0 0 L 100 0 A 100 100 0 0 1 0 100 Z" fill="${color}"/>`,
+  };
+  function seededRandom(seed){
+    let s = seed;
+    return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  }
+  function renderTiles(host){
+    const cols = +host.dataset.cols || 24;
+    const rows = +host.dataset.rows || 2;
+    const bg = host.dataset.bg || '#0d3d45';
+    const colors = (host.dataset.colors || '#f1ead7').split(',');
+    const seed = +host.dataset.seed || 42;
+    const tileSize = 100;
+    const w = cols * tileSize, h = rows * tileSize;
+    const rotTable = [[0, 270], [90, 180]];
+    let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMid slice" style="width:100%;height:100%;display:block">`;
+    svg += `<rect width="${w}" height="${h}" fill="${bg}"/>`;
+    for (let r = 0; r < rows; r++){
+      for (let c = 0; c < cols; c++){
+        const x = c * tileSize, y = r * tileSize;
+        const color = colors[(c + r) % colors.length];
+        const rot = rotTable[r % 2][c % 2];
+        const content = MOTIFS.disc(color);
+        svg += `<g transform="translate(${x} ${y}) rotate(${rot} ${tileSize/2} ${tileSize/2})">${content}</g>`;
+      }
+    }
+    svg += '</svg>';
+    host.innerHTML = svg;
+  }
+  window.__renderAllTiles = function(){
+    document.querySelectorAll('[data-tiles]').forEach(renderTiles);
+  };
+})();
+
 const SHARED_PASSWORD = "civicpower";
-const STORAGE_KEY = "cp2-state-v3";
+const STORAGE_KEY = "cp2-state-v4";
 
 const RQS = [
   {
@@ -401,7 +363,7 @@ const RQS = [
   {
     id: "rq2",
     q: "<em>Prisms</em> showed organized constituencies can refract participation into power. What is the internal architecture of that refraction? Which organizational properties drive (or threaten) it, and how do they vary?",
-    htw: "Operationalize the five candidate mechanisms (agency, bandwidth, signal credibility, succession, transmission). Score each org on each mechanism using attendance/network data and qualitative case work. Decompose 'power' into legislation, governing presence, base retention, and leadership pipeline. Test which mechanisms drive each outcome, and which threaten it (over-functioning leadership, brittle succession, captured signal). CP2 stands on Prisms; the move is from existence to architecture.",
+    htw: "Operationalize a set of candidate mechanisms (agency, bandwidth, signal credibility, succession, transmission). Score each org on each mechanism using attendance/network data and qualitative case work. Decompose 'power' into legislation, governing presence, base retention, and leadership pipeline. Test which mechanisms drive each outcome, and which threaten it (over-functioning leadership, brittle succession, captured signal). CP2 stands on Prisms; the move is from existence to architecture.",
     seedScores: [4.4, 4.7, 4.5],
     seedReacts: { strong: 9, close: 2, no: 0 },
     seedComments: []
@@ -482,7 +444,12 @@ function tryEnter(){
 gateBtn.addEventListener('click', tryEnter);
 gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryEnter(); });
 
-function show(){ gate.style.display = 'none'; content.style.display = 'block'; render(); }
+function show(){
+  gate.style.display = 'none';
+  content.style.display = 'block';
+  if (window.__renderAllTiles) window.__renderAllTiles();
+  render();
+}
 if (sessionStorage.getItem('cp2-gate') === 'open') show(); else gateInput.focus();
 
 function loadState(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
@@ -545,7 +512,7 @@ function renderRQs(){
                   <div class="meta">${c.name || 'anonymous'} · ${c.ts}</div>
                   <div class="body">${escapeHtml(c.body)}</div>
                 </div>
-              `).join('') || '<div class="muted" style="font-size:12.5px;font-style:italic;padding:6px 0">No notes yet. Reformulations, pushback, alternative phrasings, all welcome.</div>'}
+              `).join('') || '<div class="muted" style="font-size:13.5px;font-style:italic;padding:6px 0">No notes yet. Reformulations, pushback, alternative phrasings, all welcome.</div>'}
             </div>
             <textarea placeholder="Workshop this question. Alternative phrasings, pushback, what's missing..."></textarea>
             <div class="post">

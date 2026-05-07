@@ -349,7 +349,67 @@
 })();
 
 const SHARED_PASSWORD = "purpleline";
-const STORAGE_KEY = "cp2-state-v5";
+const API_URL = "https://script.google.com/macros/s/AKfycbx6pqMOsB8QXczJOHnzwmOtNI2gHBWbbXXDJ-tkkjhx-5fbqkcOT6WRLahE1e2H2FIiQA/exec";
+const POLL_MS = 15000;
+
+// Stable per-browser ID so we can replace your prior vote/react instead of stacking them.
+function getVoterId(){
+  let id = localStorage.getItem('cp2-voter-id');
+  if (!id) { id = 'v_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); localStorage.setItem('cp2-voter-id', id); }
+  return id;
+}
+const VOTER_ID = getVoterId();
+
+let REMOTE = { votes: [], reacts: [], comments: [], prompts: [], rqsubs: [] };
+
+async function apiGet(){
+  const r = await fetch(API_URL, { method: 'GET' });
+  return await r.json();
+}
+async function apiPost(payload){
+  const r = await fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    // text/plain avoids the CORS preflight that Apps Script web apps can't answer
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  });
+  return await r.json();
+}
+async function loadAll(){
+  try {
+    const data = await apiGet();
+    REMOTE = {
+      votes:    data.votes    || [],
+      reacts:   data.reacts   || [],
+      comments: data.comments || [],
+      prompts:  data.prompts  || [],
+      rqsubs:   data.rqsubs   || []
+    };
+  } catch(e){ console.error('cp2 load failed', e); }
+}
+
+function aggregateRQ(rqId){
+  const votes    = REMOTE.votes.filter(v => v.rqId === rqId);
+  const reacts   = REMOTE.reacts.filter(r => r.rqId === rqId);
+  const comments = REMOTE.comments.filter(c => c.rqId === rqId);
+  const myVotes  = votes.filter(v => v.voterId === VOTER_ID);
+  const myReact  = reacts.find(r => r.voterId === VOTER_ID);
+
+  const avgScore = [0,1,2].map(ax => {
+    const axVotes = votes.filter(v => Number(v.axis) === ax);
+    if (axVotes.length === 0) return { avg: '—', n: 0 };
+    const sum = axVotes.reduce((s, v) => s + Number(v.score), 0);
+    return { avg: (sum / axVotes.length).toFixed(1), n: axVotes.length };
+  });
+
+  const myScores = [null, null, null];
+  myVotes.forEach(v => { myScores[Number(v.axis)] = Number(v.score); });
+
+  const reactCount = { strong: 0, close: 0, no: 0 };
+  reacts.forEach(r => { if (reactCount[r.react] !== undefined) reactCount[r.react]++; });
+
+  return { avgScore, myScores, reactCount, myReact: myReact ? myReact.react : null, comments };
+}
 
 const RQS = [
   {
@@ -432,10 +492,10 @@ const gateBtn = document.getElementById('gate-btn');
 const gateErr = document.getElementById('gate-err');
 const content = document.getElementById('content');
 
-function tryEnter(){
+async function tryEnter(){
   if (gateInput.value === SHARED_PASSWORD) {
     sessionStorage.setItem('cp2-gate', 'open');
-    show();
+    await show();
   } else {
     gateErr.textContent = "Not the password.";
     gateInput.focus(); gateInput.select();
@@ -444,45 +504,28 @@ function tryEnter(){
 gateBtn.addEventListener('click', tryEnter);
 gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryEnter(); });
 
-function show(){
+async function show(){
   gate.style.display = 'none';
   content.style.display = 'block';
   if (window.__renderAllTiles) window.__renderAllTiles();
+  await loadAll();
   render();
+  setInterval(async () => { await loadAll(); render(); }, POLL_MS);
 }
 if (sessionStorage.getItem('cp2-gate') === 'open') show(); else gateInput.focus();
 
-function loadState(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
-function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-function getRQState(rqId){
-  const s = loadState();
-  if (!s.rqs) s.rqs = {};
-  if (!s.rqs[rqId]) {
-    s.rqs[rqId] = {
-      myScores: [null, null, null],
-      myReact: null,
-      seedScoreSum: [0, 0, 0],
-      seedScoreN: 0,
-      reacts: { strong: 0, close: 0, no: 0 },
-      comments: []
-    };
-    saveState(s);
-  }
-  return s.rqs[rqId];
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function fmtTs(ts){
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return String(ts);
+  return d.toISOString().slice(0,16).replace('T', ' ');
 }
-function setRQState(rqId, partial){ const s = loadState(); s.rqs[rqId] = { ...s.rqs[rqId], ...partial }; saveState(s); }
-function avg(rqState, axis){
-  const sum = rqState.seedScoreSum[axis] + (rqState.myScores[axis] || 0);
-  const n = rqState.seedScoreN + (rqState.myScores[axis] !== null ? 1 : 0);
-  if (n === 0) return '—';
-  return (sum / n).toFixed(1);
-}
-function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
 function renderRQs(){
   const wrap = document.getElementById('rqs');
   wrap.innerHTML = RQS.map((r, i) => {
-    const st = getRQState(r.id);
+    const a = aggregateRQ(r.id);
     return `
       <div class="rq" data-id="${r.id}">
         <div class="num">RQ · ${String(i+1).padStart(2,'0')}</div>
@@ -493,23 +536,23 @@ function renderRQs(){
           <div class="scoring">
             ${['Field learning','Informs practice','Paradigm shift'].map((label, ax) => `
               <div class="axis">
-                <div class="label"><span>${label}</span><span class="v" id="${r.id}-v-${ax}">${st.myScores[ax] ?? '—'}</span></div>
-                <input type="range" min="1" max="5" step="0.5" value="${st.myScores[ax] ?? 3}" data-axis="${ax}" data-rq="${r.id}" />
-                <div class="avg">avg ${avg(st, ax)} · ${st.seedScoreN + (st.myScores[ax] !== null ? 1 : 0)} votes</div>
+                <div class="label"><span>${label}</span><span class="v" id="${r.id}-v-${ax}">${a.myScores[ax] ?? '—'}</span></div>
+                <input type="range" min="1" max="5" step="0.5" value="${a.myScores[ax] ?? 3}" data-axis="${ax}" data-rq="${r.id}" />
+                <div class="avg">avg ${a.avgScore[ax].avg} · ${a.avgScore[ax].n} vote${a.avgScore[ax].n===1?'':'s'}</div>
               </div>
             `).join('')}
           </div>
           <div class="reacts">
-            <button data-react="strong" class="${st.myReact === 'strong' ? 'active' : ''}">Strong question <span class="ct">${st.reacts.strong}</span></button>
-            <button data-react="close" class="${st.myReact === 'close' ? 'active' : ''}">Close, needs reformulating <span class="ct">${st.reacts.close}</span></button>
-            <button data-react="no" class="${st.myReact === 'no' ? 'active' : ''}">Not this one <span class="ct">${st.reacts.no}</span></button>
+            <button data-react="strong" class="${a.myReact === 'strong' ? 'active' : ''}">Strong question <span class="ct">${a.reactCount.strong}</span></button>
+            <button data-react="close" class="${a.myReact === 'close' ? 'active' : ''}">Close, needs reformulating <span class="ct">${a.reactCount.close}</span></button>
+            <button data-react="no" class="${a.myReact === 'no' ? 'active' : ''}">Not this one <span class="ct">${a.reactCount.no}</span></button>
           </div>
           <div class="threads">
-            <div class="header"><span>Workshop · ${st.comments.length} note${st.comments.length===1?'':'s'}</span></div>
+            <div class="header"><span>Workshop · ${a.comments.length} note${a.comments.length===1?'':'s'}</span></div>
             <div class="comments-list">
-              ${st.comments.map(c => `
+              ${a.comments.map(c => `
                 <div class="comment">
-                  <div class="meta">${c.name || 'anonymous'} · ${c.ts}</div>
+                  <div class="meta">${escapeHtml(c.name || 'anonymous')} · ${fmtTs(c.ts)}</div>
                   <div class="body">${escapeHtml(c.body)}</div>
                 </div>
               `).join('') || '<div class="muted" style="font-size:13.5px;font-style:italic;padding:6px 0">No notes yet. Reformulations, pushback, alternative phrasings, all welcome.</div>'}
@@ -532,76 +575,91 @@ function renderRQs(){
       card.querySelector('.htw-toggle').textContent = card.classList.contains('open') ? '− hide' : '+ how would we know?';
     });
     card.querySelectorAll('input[type=range]').forEach(slider => {
+      // live: just update the displayed number while sliding
       slider.addEventListener('input', () => {
         const ax = +slider.dataset.axis, v = +slider.value;
-        const st = getRQState(id);
-        st.myScores[ax] = v;
-        setRQState(id, { myScores: st.myScores });
         card.querySelector(`#${id}-v-${ax}`).textContent = v;
-        card.querySelectorAll('.scoring .avg')[ax].textContent = `avg ${avg(st, ax)} · ${st.seedScoreN + 1} votes`;
+      });
+      // commit to backend on release
+      slider.addEventListener('change', async () => {
+        const ax = +slider.dataset.axis, v = +slider.value;
+        slider.disabled = true;
+        await apiPost({ action: 'vote', rqId: id, axis: ax, score: v, voterId: VOTER_ID });
+        await loadAll();
+        render();
       });
     });
     card.querySelectorAll('.reacts button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const r = btn.dataset.react, st = getRQState(id);
-        if (st.myReact === r) { st.reacts[r]--; st.myReact = null; }
-        else { if (st.myReact) st.reacts[st.myReact]--; st.reacts[r]++; st.myReact = r; }
-        setRQState(id, { reacts: st.reacts, myReact: st.myReact });
-        card.querySelectorAll('.reacts button').forEach(b => {
-          const rt = b.dataset.react;
-          b.classList.toggle('active', st.myReact === rt);
-          b.querySelector('.ct').textContent = st.reacts[rt];
-        });
+      btn.addEventListener('click', async () => {
+        const r = btn.dataset.react;
+        const a = aggregateRQ(id);
+        const next = (a.myReact === r) ? null : r; // toggle off if same
+        card.querySelectorAll('.reacts button').forEach(b => b.disabled = true);
+        await apiPost({ action: 'react', rqId: id, react: next, voterId: VOTER_ID });
+        await loadAll();
+        render();
       });
     });
     const ta = card.querySelector('.threads textarea');
     const nameInput = card.querySelector('.threads .post input');
     const postBtn = card.querySelector('.threads .post button');
-    postBtn.addEventListener('click', () => {
+    postBtn.addEventListener('click', async () => {
       const body = ta.value.trim(); if (!body) return;
-      const st = getRQState(id);
-      st.comments.push({ body, name: nameInput.value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
-      setRQState(id, { comments: st.comments });
+      postBtn.disabled = true;
+      postBtn.textContent = 'Posting...';
+      await apiPost({ action: 'comment', rqId: id, name: nameInput.value.trim() || null, body });
       ta.value = '';
-      renderRQs();
+      nameInput.value = '';
+      await loadAll();
+      render();
     });
   });
 }
 
 function renderPrompt(){
-  const s = loadState();
-  const list = s.promptResponses || [];
+  const list = REMOTE.prompts.slice().reverse(); // newest first
   const wrap = document.getElementById('prompt-responses-wrap');
   const target = document.getElementById('prompt-responses');
   if (list.length === 0) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-  target.innerHTML = list.map(r => `<div class="response"><div class="meta">${r.name || 'anonymous'} · ${r.ts}</div>${escapeHtml(r.body)}</div>`).join('');
+  target.innerHTML = list.map(r => `<div class="response"><div class="meta">${escapeHtml(r.name || 'anonymous')} · ${fmtTs(r.ts)}</div>${escapeHtml(r.body)}</div>`).join('');
 }
-document.getElementById('prompt-submit').addEventListener('click', () => {
+document.getElementById('prompt-submit').addEventListener('click', async () => {
   const body = document.getElementById('prompt-input').value.trim(); if (!body) return;
-  const s = loadState(); if (!s.promptResponses) s.promptResponses = [];
-  s.promptResponses.unshift({ body, name: document.getElementById('prompt-name').value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
-  saveState(s);
+  const btn = document.getElementById('prompt-submit');
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = 'Posting...';
+  await apiPost({ action: 'prompt', name: document.getElementById('prompt-name').value.trim() || null, body });
   document.getElementById('prompt-input').value = '';
-  renderPrompt();
+  document.getElementById('prompt-name').value = '';
+  await loadAll();
+  render();
+  btn.disabled = false;
+  btn.textContent = oldText;
 });
 
 function renderSubmittedRQs(){
-  const s = loadState();
-  const list = s.submittedRQs || [];
+  const list = REMOTE.rqsubs.slice().reverse();
   const wrap = document.getElementById('rq-submitted-wrap');
   const target = document.getElementById('rq-submitted');
   if (list.length === 0) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-  target.innerHTML = list.map(r => `<div class="sub-item"><div class="meta">${r.name || 'anonymous'} · ${r.ts}</div><div class="body">${escapeHtml(r.body)}</div></div>`).join('');
+  target.innerHTML = list.map(r => `<div class="sub-item"><div class="meta">${escapeHtml(r.name || 'anonymous')} · ${fmtTs(r.ts)}</div><div class="body">${escapeHtml(r.body)}</div></div>`).join('');
 }
-document.getElementById('rq-submit').addEventListener('click', () => {
+document.getElementById('rq-submit').addEventListener('click', async () => {
   const body = document.getElementById('rq-input').value.trim(); if (!body) return;
-  const s = loadState(); if (!s.submittedRQs) s.submittedRQs = [];
-  s.submittedRQs.unshift({ body, name: document.getElementById('rq-name').value.trim() || null, ts: new Date().toISOString().slice(0,16).replace('T',' ') });
-  saveState(s);
+  const btn = document.getElementById('rq-submit');
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = 'Submitting...';
+  await apiPost({ action: 'rqsub', name: document.getElementById('rq-name').value.trim() || null, body });
   document.getElementById('rq-input').value = '';
-  renderSubmittedRQs();
+  document.getElementById('rq-name').value = '';
+  await loadAll();
+  render();
+  btn.disabled = false;
+  btn.textContent = oldText;
 });
 
 function render(){ renderRQs(); renderPrompt(); renderSubmittedRQs(); }

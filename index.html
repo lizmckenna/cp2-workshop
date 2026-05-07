@@ -149,7 +149,7 @@
 
   /* ---- Prompt box ---- */
   .prompt-box{background:var(--cobalt-deep);color:var(--headline-text);padding:0;margin-top:24px;position:relative;overflow:hidden}
-  .prompt-box .inner{padding:56px 48px 48px;position:relative;z-index:1;max-width:64ch}
+  .prompt-box .inner{padding:56px 48px 48px;position:relative;z-index:1}
   .prompt-box .mono{color:var(--gold);letter-spacing:.18em;font-family:var(--font-mono);font-size:11px;text-transform:uppercase}
   .prompt-box .q{font-family:var(--font-display);font-size:clamp(26px, 2.6vw, 34px);line-height:1.25;margin:18px 0 12px;font-weight:500;letter-spacing:-.015em;color:var(--headline-text);max-width:24ch}
   .prompt-box .q em{font-style:italic;color:var(--gold);font-weight:500}
@@ -215,7 +215,7 @@
 <div class="hero-tiles" data-tiles
      data-cols="24" data-rows="2" data-seed="909"
      data-bg="#0d3d45"
-     data-colors="#f1ead7,#d9a636,#b84a2e"></div>
+     data-colors="#d9a636,#b84a2e"></div>
 
 <section>
   <h2><span class="num">§ 1 · the frame</span>What CP1 surfaced, and what CP2 has to do <em>differently</em>.</h2>
@@ -349,7 +349,7 @@
 })();
 
 const SHARED_PASSWORD = "purpleline";
-const STORAGE_KEY = "cp2-state-v4";
+const STORAGE_KEY = "cp2-state-v5";
 
 const RQS = [
   {
@@ -458,14 +458,13 @@ function getRQState(rqId){
   const s = loadState();
   if (!s.rqs) s.rqs = {};
   if (!s.rqs[rqId]) {
-    const seed = RQS.find(r => r.id === rqId);
     s.rqs[rqId] = {
       myScores: [null, null, null],
       myReact: null,
-      seedScoreSum: seed.seedScores.map(x => x * 8),
-      seedScoreN: 8,
-      reacts: { ...seed.seedReacts },
-      comments: [...seed.seedComments]
+      seedScoreSum: [0, 0, 0],
+      seedScoreN: 0,
+      reacts: { strong: 0, close: 0, no: 0 },
+      comments: []
     };
     saveState(s);
   }
@@ -475,6 +474,7 @@ function setRQState(rqId, partial){ const s = loadState(); s.rqs[rqId] = { ...s.
 function avg(rqState, axis){
   const sum = rqState.seedScoreSum[axis] + (rqState.myScores[axis] || 0);
   const n = rqState.seedScoreN + (rqState.myScores[axis] !== null ? 1 : 0);
+  if (n === 0) return '—';
   return (sum / n).toFixed(1);
 }
 function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }

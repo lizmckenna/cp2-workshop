@@ -110,7 +110,7 @@
   .rq:nth-child(3n+2){border-top-color:var(--olive)}
   .rq .inner{padding:26px 32px}
   .rq .num{position:absolute;top:14px;right:24px;font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase}
-  .rq .q{font-family:var(--font-display);font-size:23px;line-height:1.35;font-weight:400;margin:8px 80px 0 0;color:var(--ink);max-width:48ch}
+  .rq .q{font-family:var(--font-display);font-size:23px;line-height:1.35;font-weight:400;margin:8px 80px 0 0;color:var(--ink)}
   .rq .q em{font-style:italic;color:var(--cobalt);font-weight:500}
   .rq:nth-child(3n) .q em{color:var(--terracotta)}
   .rq:nth-child(3n+2) .q em{color:var(--olive)}
@@ -123,10 +123,13 @@
   .rq .scoring .axis{font-size:12px}
   .rq .scoring .axis .label{display:flex;justify-content:space-between;margin-bottom:8px;font-family:var(--font-mono);font-size:10.5px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase}
   .rq .scoring .axis .label .v{color:var(--cobalt);font-weight:500}
-  .rq .scoring input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:2px;background:var(--rule);outline:none}
-  .rq .scoring input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--cobalt);cursor:pointer;border:2px solid var(--cream-2);border-radius:50%}
-  .rq .scoring input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--cobalt);cursor:pointer;border:2px solid var(--cream-2);border-radius:50%}
-  .rq .scoring .avg{font-family:var(--font-mono);font-size:9.5px;color:var(--mute);margin-top:6px;letter-spacing:.1em}
+  .rq .scoring .seg{display:flex;gap:0;margin-top:4px}
+  .rq .scoring .seg button{flex:1;padding:8px 0;border:1px solid var(--rule);background:transparent;font-family:var(--font-mono);font-size:12px;color:var(--mute);cursor:pointer;margin-right:-1px;letter-spacing:.04em}
+  .rq .scoring .seg button:last-child{margin-right:0}
+  .rq .scoring .seg button:hover{border-color:var(--cobalt);color:var(--cobalt);z-index:1;position:relative}
+  .rq .scoring .seg button.active{background:var(--cobalt);border-color:var(--cobalt);color:var(--paper);z-index:1;position:relative}
+  .rq .scoring .seg button:disabled{opacity:.55;cursor:wait}
+  .rq .scoring .avg{font-family:var(--font-mono);font-size:9.5px;color:var(--mute);margin-top:8px;letter-spacing:.1em}
 
   .rq .reacts{display:flex;gap:0;margin-top:22px;flex-wrap:wrap}
   .rq .reacts button{font-family:var(--font-sans);font-size:12.5px;padding:8px 16px;border:1px solid var(--rule);background:transparent;cursor:pointer;color:var(--ink-2);font-weight:400;margin-right:-1px;letter-spacing:.02em}
@@ -361,6 +364,7 @@ function getVoterId(){
 const VOTER_ID = getVoterId();
 
 let REMOTE = { votes: [], reacts: [], comments: [], prompts: [], rqsubs: [] };
+let inFlight = 0; // pause polling while we have writes in flight
 
 async function apiGet(){
   const r = await fetch(API_URL, { method: 'GET' });
@@ -510,7 +514,11 @@ async function show(){
   if (window.__renderAllTiles) window.__renderAllTiles();
   await loadAll();
   render();
-  setInterval(async () => { await loadAll(); render(); }, POLL_MS);
+  setInterval(async () => {
+    if (inFlight > 0) return; // don't refresh while writing
+    await loadAll();
+    render();
+  }, POLL_MS);
 }
 if (sessionStorage.getItem('cp2-gate') === 'open') show(); else gateInput.focus();
 
@@ -536,16 +544,13 @@ function renderRQs(){
           <div class="scoring">
             ${['Field learning','Informs practice','Paradigm shift'].map((label, ax) => `
               <div class="axis">
-                <div class="label"><span>${label}</span><span class="v" id="${r.id}-v-${ax}">${a.myScores[ax] ?? '—'}</span></div>
-                <input type="range" min="1" max="5" step="0.5" value="${a.myScores[ax] ?? 3}" data-axis="${ax}" data-rq="${r.id}" />
+                <div class="label"><span>${label}</span><span class="v">${a.myScores[ax] !== null ? a.myScores[ax] : '—'}</span></div>
+                <div class="seg" data-axis="${ax}">
+                  ${[1,2,3,4,5].map(v => `<button data-score="${v}" class="${a.myScores[ax] === v ? 'active' : ''}">${v}</button>`).join('')}
+                </div>
                 <div class="avg">avg ${a.avgScore[ax].avg} · ${a.avgScore[ax].n} vote${a.avgScore[ax].n===1?'':'s'}</div>
               </div>
             `).join('')}
-          </div>
-          <div class="reacts">
-            <button data-react="strong" class="${a.myReact === 'strong' ? 'active' : ''}">Strong question <span class="ct">${a.reactCount.strong}</span></button>
-            <button data-react="close" class="${a.myReact === 'close' ? 'active' : ''}">Close, needs reformulating <span class="ct">${a.reactCount.close}</span></button>
-            <button data-react="no" class="${a.myReact === 'no' ? 'active' : ''}">Not this one <span class="ct">${a.reactCount.no}</span></button>
           </div>
           <div class="threads">
             <div class="header"><span>Workshop · ${a.comments.length} note${a.comments.length===1?'':'s'}</span></div>
@@ -574,30 +579,27 @@ function renderRQs(){
       card.classList.toggle('open');
       card.querySelector('.htw-toggle').textContent = card.classList.contains('open') ? '− hide' : '+ how would we know?';
     });
-    card.querySelectorAll('input[type=range]').forEach(slider => {
-      // live: just update the displayed number while sliding
-      slider.addEventListener('input', () => {
-        const ax = +slider.dataset.axis, v = +slider.value;
-        card.querySelector(`#${id}-v-${ax}`).textContent = v;
-      });
-      // commit to backend on release
-      slider.addEventListener('change', async () => {
-        const ax = +slider.dataset.axis, v = +slider.value;
-        slider.disabled = true;
-        await apiPost({ action: 'vote', rqId: id, axis: ax, score: v, voterId: VOTER_ID });
-        await loadAll();
+    card.querySelectorAll('.seg button').forEach(b => {
+      b.addEventListener('click', async () => {
+        const ax = +b.parentElement.dataset.axis;
+        const v  = +b.dataset.score;
+
+        // Optimistic local update so the click registers instantly
+        REMOTE.votes = REMOTE.votes.filter(vt =>
+          !(vt.rqId === id && Number(vt.axis) === ax && vt.voterId === VOTER_ID)
+        );
+        REMOTE.votes.push({ ts: new Date().toISOString(), rqId: id, axis: ax, score: v, voterId: VOTER_ID });
         render();
-      });
-    });
-    card.querySelectorAll('.reacts button').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const r = btn.dataset.react;
-        const a = aggregateRQ(id);
-        const next = (a.myReact === r) ? null : r; // toggle off if same
-        card.querySelectorAll('.reacts button').forEach(b => b.disabled = true);
-        await apiPost({ action: 'react', rqId: id, react: next, voterId: VOTER_ID });
-        await loadAll();
-        render();
+
+        // Background commit; pause polling until done so we don't render stale data
+        inFlight++;
+        try {
+          await apiPost({ action: 'vote', rqId: id, axis: ax, score: v, voterId: VOTER_ID });
+        } catch (err) {
+          console.error('vote post failed', err);
+        } finally {
+          inFlight--;
+        }
       });
     });
     const ta = card.querySelector('.threads textarea');

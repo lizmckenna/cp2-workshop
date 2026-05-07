@@ -184,11 +184,14 @@
   .submit-rq .post input{flex:0 0 220px;border:1px solid var(--rule);background:#fff;padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--ink)}
   .submit-rq .post button{padding:11px 22px;border:1px solid var(--terracotta);background:var(--terracotta);color:var(--paper);font-family:var(--font-sans);font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:.06em;text-transform:uppercase}
   .submit-rq .post button:hover{background:#8e3220;border-color:#8e3220}
-  .submit-rq .submitted{margin-top:24px}
-  .submit-rq .submitted .h{font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px}
-  .submit-rq .sub-item{padding:14px 0;border-top:1px solid var(--rule);font-family:var(--font-display);font-size:16px}
-  .submit-rq .sub-item .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--mute);margin-bottom:4px;letter-spacing:.08em}
-  .submit-rq .sub-item .body{color:var(--ink);line-height:1.55}
+  .submit-rq .submitted{margin-top:28px;border-top:1px solid var(--rule);padding-top:22px}
+  .submit-rq .submitted .h{font-family:var(--font-mono);font-size:11px;color:var(--terracotta);letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+  .submit-rq .submitted .h .ct{color:var(--mute);margin-left:6px;font-weight:400}
+  .submit-rq .sub-item{background:var(--paper);padding:18px 22px;border-left:3px solid var(--terracotta);margin-bottom:10px;font-family:var(--font-display);font-size:16.5px;line-height:1.55}
+  .submit-rq .sub-item:last-child{margin-bottom:0}
+  .submit-rq .sub-item .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--mute);margin-bottom:6px;letter-spacing:.08em}
+  .submit-rq .sub-item .body{color:var(--ink)}
+  .submit-rq .sub-empty{font-family:var(--font-display);font-style:italic;font-size:15px;color:var(--mute);padding:6px 0 4px}
 
   footer{margin-top:96px;padding-top:32px;border-top:1px solid var(--rule);font-family:var(--font-display);font-size:14px;color:var(--mute);font-style:italic;line-height:1.6}
   footer .mono{display:block;margin-bottom:8px;color:var(--terracotta);font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
@@ -298,8 +301,8 @@
         <input id="rq-name" type="text" placeholder="Name (optional)" />
         <button id="rq-submit">Submit question</button>
       </div>
-      <div class="submitted" id="rq-submitted-wrap" style="display:none">
-        <div class="h">Submitted questions</div>
+      <div class="submitted" id="rq-submitted-wrap">
+        <div class="h">Questions from the room <span class="ct" id="rq-submitted-count"></span></div>
         <div id="rq-submitted"></div>
       </div>
     </div>
@@ -622,46 +625,89 @@ function renderPrompt(){
   const list = REMOTE.prompts.slice().reverse(); // newest first
   const wrap = document.getElementById('prompt-responses-wrap');
   const target = document.getElementById('prompt-responses');
-  if (list.length === 0) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
+  if (list.length === 0) {
+    target.innerHTML = '<div class="response" style="color:rgba(240,231,209,.55);font-style:italic">No responses yet. Yours will appear here for the room.</div>';
+    return;
+  }
   target.innerHTML = list.map(r => `<div class="response"><div class="meta">${escapeHtml(r.name || 'anonymous')} · ${fmtTs(r.ts)}</div>${escapeHtml(r.body)}</div>`).join('');
 }
 document.getElementById('prompt-submit').addEventListener('click', async () => {
   const body = document.getElementById('prompt-input').value.trim(); if (!body) return;
   const btn = document.getElementById('prompt-submit');
-  btn.disabled = true;
   const oldText = btn.textContent;
-  btn.textContent = 'Posting...';
-  await apiPost({ action: 'prompt', name: document.getElementById('prompt-name').value.trim() || null, body });
+  btn.disabled = true;
+  btn.textContent = 'Posting…';
+
+  const name = document.getElementById('prompt-name').value.trim() || null;
+  const ts = new Date().toISOString();
+
+  // Optimistic local add + render
+  REMOTE.prompts.push({ ts, name, body });
   document.getElementById('prompt-input').value = '';
   document.getElementById('prompt-name').value = '';
-  await loadAll();
   render();
-  btn.disabled = false;
-  btn.textContent = oldText;
+
+  const newest = document.querySelector('#prompt-responses .response');
+  if (newest) newest.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  inFlight++;
+  try {
+    await apiPost({ action: 'prompt', name, body });
+    btn.textContent = 'Posted ✓';
+  } catch (err) {
+    console.error('prompt failed', err);
+    btn.textContent = 'Failed — retry';
+  } finally {
+    inFlight--;
+  }
+  setTimeout(() => { btn.disabled = false; btn.textContent = oldText; }, 1800);
 });
 
 function renderSubmittedRQs(){
-  const list = REMOTE.rqsubs.slice().reverse();
+  const list = REMOTE.rqsubs.slice().reverse(); // newest first
   const wrap = document.getElementById('rq-submitted-wrap');
   const target = document.getElementById('rq-submitted');
-  if (list.length === 0) { wrap.style.display = 'none'; return; }
+  const count = document.getElementById('rq-submitted-count');
   wrap.style.display = 'block';
+  if (count) count.textContent = list.length ? `· ${list.length}` : '';
+  if (list.length === 0) {
+    target.innerHTML = '<div class="sub-empty">No questions yet. Be the first to add one — your submission will appear here for everyone in the room.</div>';
+    return;
+  }
   target.innerHTML = list.map(r => `<div class="sub-item"><div class="meta">${escapeHtml(r.name || 'anonymous')} · ${fmtTs(r.ts)}</div><div class="body">${escapeHtml(r.body)}</div></div>`).join('');
 }
 document.getElementById('rq-submit').addEventListener('click', async () => {
   const body = document.getElementById('rq-input').value.trim(); if (!body) return;
   const btn = document.getElementById('rq-submit');
-  btn.disabled = true;
   const oldText = btn.textContent;
-  btn.textContent = 'Submitting...';
-  await apiPost({ action: 'rqsub', name: document.getElementById('rq-name').value.trim() || null, body });
+  btn.disabled = true;
+  btn.textContent = 'Posting…';
+
+  const name = document.getElementById('rq-name').value.trim() || null;
+  const ts = new Date().toISOString();
+
+  // Optimistic: add locally + render so the new item appears instantly
+  REMOTE.rqsubs.push({ ts, name, body });
   document.getElementById('rq-input').value = '';
   document.getElementById('rq-name').value = '';
-  await loadAll();
   render();
-  btn.disabled = false;
-  btn.textContent = oldText;
+
+  // Smooth-scroll to the new entry so the user sees where it landed
+  const newest = document.querySelector('#rq-submitted .sub-item');
+  if (newest) newest.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  inFlight++;
+  try {
+    await apiPost({ action: 'rqsub', name, body });
+    btn.textContent = 'Posted ✓';
+  } catch (err) {
+    console.error('rqsub failed', err);
+    btn.textContent = 'Failed — retry';
+  } finally {
+    inFlight--;
+  }
+  setTimeout(() => { btn.disabled = false; btn.textContent = oldText; }, 1800);
 });
 
 function render(){ renderRQs(); renderPrompt(); renderSubmittedRQs(); }
